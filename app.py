@@ -45,7 +45,6 @@ def oak():
 </html>
 '''
 count=0
-
 @app.route("/lab1/counter")
 def counter():
     global count
@@ -55,6 +54,8 @@ def counter():
 <html>
     <body>
         Сколько раз вы сюда заходили: '''+ str(count) +'''
+        <br>
+        <a href="/lab1/counter/reset">Сбросить счётчик</a>
     </body>
 </html>
 '''
@@ -78,3 +79,18 @@ def created():
 @app.errorhandler(404)
 def not_found(err):
     return "ТАКОЙ СТРАНИЦЫ НЕ СУЩЕСТВУЕТ", 404
+
+
+@app.route('/lab1/counter/reset')
+def reset_counter():
+    global count
+    count = 0
+    return'''
+<!DOCTYPE html>
+<html>
+    <body>
+        Сколько раз вы сюда заходили: '''+ str(count) +'''
+        <br>
+        <a href="/lab1/counter">Возобновить счетчик</a>
+    </body>
+</html>'''
