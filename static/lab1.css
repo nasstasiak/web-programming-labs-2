@@ -1,0 +1,14 @@
+img {
+    height: 500px;
+    border-radius: 10%;
+    border: 10px dashed;
+    color: rgb(85, 107, 47);
+}
+body {
+    text-align: center;
+    background-color: #8FBC8F;
+}
+h1 {
+    font-family: cursive;
+    color: rgb(85, 107, 47);
+}
