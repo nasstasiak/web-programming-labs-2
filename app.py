@@ -94,3 +94,31 @@ def reset_counter():
         <a href="/lab1/counter">Возобновить счетчик</a>
     </body>
 </html>'''
+
+@app.route("/")
+@app.route("/index")
+def labs():
+    style = url_for("static", filename="style.css")
+    return '''<!DOCTYPE html>
+<head>
+    <title>НГТУ, ФБ, Лабораторные работы</title>
+    <link rel="stylesheet" type="text/css" href="''' + style + '''">
+    <link rel="shortcut icon" href="dog.png" type="image/x-icon">
+</head>
+<body >
+    <header>
+        НГТУ, ФБ, WEB-программирование,часть 2. Список лабораторных
+    </header>
+    <main>
+        <h1>Лабораторные работы по WEB-программированию</h1>
+        <div>
+        <a href="/lab1">Лабораторная работа 1</a>
+        </div>
+    </main>
+
+    <footer>
+        &COPY; Кузьмина Анастасия, ФБИ-22, 3 курс, 2024
+    </footer>
+</body>
+</html>
+'''
