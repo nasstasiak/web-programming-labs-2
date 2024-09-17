@@ -183,7 +183,7 @@ def errors():
         <a href="/lab1/method_not_allowed">405;</a><br>
         <a href="/lab1/teapot">418;</a><br>
         <a href="/lab1/internal_server_error">500;</a><br>
-        <a href="/lab1">&#8656;</a>
+        <a href="/lab1">&#128072;</a>
     </body>
 </html>
 '''
@@ -369,13 +369,13 @@ def headers():
     }
 
 
-tower_pour = False
+tower_built = False
 
 @app.route('/lab1/tower')
 def teacup_status():
     style = url_for("static", filename="style.css")
-    global tower_pour
-    status = "Башня построена" if tower_pour else "Башня не построена"
+    global tower_built
+    status = "Башня построена" if tower_built else "Башня не построена"
     response = f'''
 <!doctype html>
 <html>
@@ -384,20 +384,20 @@ def teacup_status():
     </head>
     <body>
         <h1>'''+status+'''</h1>
-        <a href="/lab1/pour">Построить башню</a><br>
+        <a href="/lab1/built">Построить башню</a><br>
         <a href="/lab1/drop">Снести башню</a>
     </body>
 </html>
 '''
     return response, 200
 
-@app.route('/lab1/pour')
-def create_teacup():
+@app.route('/lab1/built')
+def create_tower():
     style = url_for("static", filename="style.css")
     tower = url_for("static", filename="tower.png")
-    global tower_pour
+    global tower_built
     
-    if tower_pour:
+    if tower_built:
         return '''
 <!doctype html>
 <html>
@@ -407,12 +407,12 @@ def create_teacup():
     <body>
         <p>Башня уже построена</p>
         <img src="'''+ tower +'''" style="margin-left:30%;">  <br>
-        <a href="/lab1/tower">&#8656;</a><br>
+        <a href="/lab1/tower">&#128072;</a><br>
     </body>
 </html>
 ''', 400
     else:
-        tower_pour = True
+        tower_built = True
         return '''
 <!doctype html>
 <html>
@@ -422,7 +422,7 @@ def create_teacup():
     <body>
         <p>Башня успешно построена)</p>
         <img src="'''+ tower +'''" style="margin-left:30%;"> <br>
-        <a href="/lab1/tower">&#8656;</a><br>
+        <a href="/lab1/tower">&#128072;</a><br>
     </body>
 </html>
 ''', 201
@@ -431,9 +431,9 @@ def create_teacup():
 def drop_tower():
     style = url_for("static", filename="style.css")
     ruin = url_for("static", filename="ruins.png")
-    global tower_pour    
-    if tower_pour:
-        tower_pour = False
+    global tower_built    
+    if tower_built:
+        tower_built = False
         return '''
 <!doctype html>
 <html>
@@ -443,7 +443,7 @@ def drop_tower():
     <body>
         <p>Башня снесена</p>
         <img src="'''+ ruin +'''" style="margin-left:30%;">  <br>
-        <a href="/lab1/tower">&#8656;</a><br>
+        <a href="/lab1/tower">&#128072;</a><br>
     </body>
 </html>
 ''', 200
@@ -458,7 +458,7 @@ def drop_tower():
     <body>
         <p>Теперь нужно строить новую башню((</p>
         <img src="'''+ ruin +'''" style="margin-left:30%;">  <br>
-        <a href="/lab1/tower">&#8656;</a><br>
+        <a href="/lab1/tower">&#128072;</a><br>
     </body>
 </html>
 ''', 400
