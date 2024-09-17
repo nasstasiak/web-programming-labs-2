@@ -363,8 +363,8 @@ def headers():
         </div>
     </body>
 </html>''', 200, {
-    'X-Vector': 'It is me',
-    'X-Teapot': 'Tea cup',
+    'X-first': 'one',
+    'X-second': 'two',
     'Content-Language': 'ru-RU'
     }
 
