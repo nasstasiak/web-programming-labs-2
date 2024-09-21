@@ -244,7 +244,7 @@ def teapot():
 
 @app.route('/lab1/internal_server_error')
 def internal_server_error():
-    result = 10 / 0  
+    result = 100 / 0  
     return 'Результат: ' + str(result)
 
 @app.errorhandler(500)
@@ -376,7 +376,7 @@ def teacup_status():
     style = url_for("static", filename="style.css")
     global tower_built
     status = "Башня построена" if tower_built else "Башня не построена"
-    response = f'''
+    return '''
 <!doctype html>
 <html>
     <head>
@@ -388,8 +388,7 @@ def teacup_status():
         <a href="/lab1/drop">Снести башню</a>
     </body>
 </html>
-'''
-    return response, 200
+''', 200
 
 @app.route('/lab1/built')
 def create_tower():
@@ -462,3 +461,12 @@ def drop_tower():
     </body>
 </html>
 ''', 400
+    
+
+@app.route('/lab2/a/')
+def a():
+    return "ok"
+
+@app.route('/lab2/a')
+def a2():
+    return "not ok"
