@@ -3,12 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Кузьмина Анастасия. Лабораторная работа 2</title>
+    <title>
+        {% if name %}
+            {{name}}, 
+        {% else %}
+            Anonimous,
+            {% endif %}. Лабораторная работа 2</title>
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
 </head>
 <body>
     <header>
-        WEB-программирование, часть 2. Лабораторная работа 2
+        WEB-программирование, часть 2. {% if lab_num %} Лабораторная работа 2{% endif %}
     </header>
 
     <main style="margin: 10px; color: rgb(67, 86, 35); font-style: bold">
@@ -21,7 +26,15 @@
     </main>
 
     <footer>
-        &COPY; {{name}}, ФБИ-22, 3 курс, 2024
+        &COPY; 
+        {% if name %}
+            {{name}}, 
+        {% else %}
+            Anonimous,
+            {% endif %}
+        {{group}}, 
+        {{course}}, 
+        2024
     </footer>
 </body>
 </html>
