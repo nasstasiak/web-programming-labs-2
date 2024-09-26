@@ -46,3 +46,20 @@ main {
     padding: 10px;
     color: rgb(85, 107, 47);
 }
+
+table{
+    border-color: rgb(12, 57, 18); 
+    border-radius: 10px; 
+    text-align: justify;
+}
+
+tr {
+    border-color: rgb(12, 57, 18); 
+    border-radius: 10px; 
+}
+td {
+    padding-inline: 10px;
+}
+th{
+    padding-inline: 10px;
+}

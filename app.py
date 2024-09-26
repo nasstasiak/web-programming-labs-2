@@ -586,3 +586,21 @@ def default_calc():
 @app.route('/lab2/calc/<int:a>')
 def single_number_calc(a):
     return redirect(url_for('calculate', a=a, b=1))
+
+
+books = [
+    {"author": "Джон Стейнбек", "title": "О мышах и людях", "genre": "Классика", "pages": 107},
+    {"author": "Джейн Остин", "title": "Гордость и предубеждение", "genre": "Роман", "pages": 432},
+    {"author": "Чарльз Диккенс", "title": "Великие надежды", "genre": "Классика", "pages": 597},
+    {"author": "Агата Кристи", "title": "Десять негритят", "genre": "Детектив", "pages": 256},
+    {"author": "Стивен Кинг", "title": "Сияние", "genre": "Ужасы", "pages": 451},
+    {"author": "Джордж Оруэлл", "title": "1984", "genre": "Антиутопия", "pages": 328},
+    {"author": "Фрэнк Херберт", "title": "Дюна", "genre": "Научная фантастика", "pages": 412},
+    {"author": "Рэй Брэдбери", "title": "451 градус по Фаренгейту", "genre": "Научная фантастика", "pages": 174},
+    {"author": "Джоан Роулинг", "title": "Гарри Поттер и философский камень", "genre": "Фэнтези", "pages": 223},
+    {"author": "Дэн Браун", "title": "Код да Винчи", "genre": "Триллер", "pages": 454},
+]
+
+@app.route("/lab2/books")
+def book():
+    return render_template("books.html", books=books)
