@@ -473,12 +473,28 @@ def a2():
 
 flower_list = ['роза', 'тюльпан', 'незабудка', 'ромашка']
 
-@app.route('/lab2/flowers/<int:flower_id>')
+@app.route('/lab2/flowers/<int:flower_id>/')
 def flowers(flower_id):
+    style = url_for("static", filename="style.css")  
     if flower_id >= len(flower_list):
-        return "Такого цветка нет", 404
+        return 'Такого цветка ещё нет', 404
     else:
-        return "цветок: " + flower_list[flower_id]
+        flower_name = flower_list[flower_id]
+        return f'''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="{style}">
+    </head>
+    <body>
+        <h1>Информация о цветке</h1>
+        <h2>Цветок: {flower_name}</h2>
+        <p>Номер цветка: {flower_id}</p>
+        <a href="/lab2/all_flowers/">Вернуться к списку цветов</a>
+    </body>
+</html>
+'''
+    
 
 
 @app.route('/lab2/add_flower/<name>')
@@ -527,8 +543,46 @@ def all_flowers():
     return render_template('flowers.html', flower_list=flowers, length=length)
 
 @app.route('/lab2/del_flowers/')
-def del_flowers():
-    flower_list.clear()
-    return '''Список успешно очищен :)<br>
-    <a href='/lab2/all_flowers/'>Назад</a>
-    '''
+def clear_flowers():
+    style = url_for("static", filename="style.css")
+    flower_list.clear()  
+    return'''
+<!doctype html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="''' + style + '''">
+    </head>
+    <body>
+        <h1>Список цветов успешно очищен!</h1>
+        <p><a href="/lab2/all_flowers/">Вернуться к списку цветов</a></p>
+    </body>
+</html>'''
+
+
+@app.route('/lab2/calc/<int:a>/<int:b>')
+def calculate(a, b):
+    number_a = a
+    number_b = b
+    addition = a + b
+    subtraction = a - b
+    multiplication = a * b
+    division = a / b if b != 0 else "Деление на ноль"
+    power = a ** b
+
+    return render_template('calc.html',
+                           a=a,
+                           b=b,
+                           addition=addition,
+                           subtraction=subtraction,
+                           multiplication=multiplication,
+                           division=division,
+                           power=power)
+
+@app.route('/lab2/calc/')
+def default_calc():
+    return redirect(url_for('calculate', a=1, b=1))
+
+
+@app.route('/lab2/calc/<int:a>')
+def single_number_calc(a):
+    return redirect(url_for('calculate', a=a, b=1))
