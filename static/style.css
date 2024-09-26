@@ -42,3 +42,7 @@ a {
     text-decoration: none;
     font-weight: bold;
 }
+main {
+    padding: 10px;
+    color: rgb(85, 107, 47);
+}

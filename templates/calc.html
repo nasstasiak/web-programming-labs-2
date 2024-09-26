@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+<h1>Результаты операций</h1>
+<p>Число A: {{ a }}</p>
+<p>Число B: {{ b }}</p>
+<p>{{a}}+{{b}}={{ addition }}</p>
+<p>{{a}}-{{b}}={{ subtraction }}</p>
+<p>{{a}}*{{b}}={{ multiplication }}</p>
+<p>{{a}}/{{b}}={{ division }}</p>
+<p>{{a}}<sup>{{b}}</sup>={{ power }}</p>
+
+{% endblock %}
