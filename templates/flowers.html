@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <h1>Список всех цветов:</h1>
+    <p>Всего цветов: {{length}} </p>
+    <p>Полный список: 
+    <ul>
+    {% for f in flower_list %}
+        <li>{{f}}</li>
+    {% endfor %}
+    </ul> </p>
+    <a href="/lab2/del_flowers/">Очистить список</a>
+{% endblock %}

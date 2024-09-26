@@ -372,7 +372,7 @@ def headers():
 tower_built = False
 
 @app.route('/lab1/tower')
-def teacup_status():
+def tower_status():
     style = url_for("static", filename="style.css")
     global tower_built
     status = "Башня построена" if tower_built else "Башня не построена"
@@ -481,7 +481,6 @@ def flowers(flower_id):
         return "цветок: " + flower_list[flower_id]
 
 
- 
 @app.route('/lab2/add_flower/<name>')
 def add_flower(name):
     flower_list.append(name)
@@ -494,7 +493,6 @@ def add_flower(name):
                     <p>Полный список: {flower_list} </p>
                 </body>
             </html>"""
-
 
 
 @app.route('/lab2/example')
@@ -517,3 +515,20 @@ def lab2():
 def filters():
     phrase = 'О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных...'
     return render_template('filter.html', phrase=phrase)
+
+@app.route('/lab2/add_flower/')
+def error_add():
+    return "Вы не задали имя цветка", 400
+
+@app.route('/lab2/all_flowers/')
+def all_flowers():
+    flowers=flower_list
+    length = len(flower_list)
+    return render_template('flowers.html', flower_list=flowers, length=length)
+
+@app.route('/lab2/del_flowers/')
+def del_flowers():
+    flower_list.clear()
+    return '''Список успешно очищен :)<br>
+    <a href='/lab2/all_flowers/'>Назад</a>
+    '''
