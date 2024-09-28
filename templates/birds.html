@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 2{% endblock %}
+
+{% block main %}
+    <h1>Список птиц</h1>
+    <ul>
+        {% for bird in birds %}
+        <h2>{{ bird.name }}</h2>
+        <p>{{ bird.description }}</p>
+        <img src="{{ url_for('static', filename='birds_img/' + bird.image) }}" />
+        {% endfor %}
+    </ul>
+    <a href="/lab2/">&#8656;</a>
+{% endblock %}

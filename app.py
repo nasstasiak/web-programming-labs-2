@@ -30,7 +30,7 @@ def author():
 
 @app.route("/lab1/oak")
 def oak():
-    path = url_for("static", filename="oak.jpg")
+    path = url_for("static", filename="oak.png")
     style = url_for("static", filename="lab1.css")
     return '''
 <!DOCTYPE html>
@@ -605,3 +605,37 @@ books = [
 @app.route("/lab2/books")
 def book():
     return render_template("books.html", books=books)
+
+
+birds = [
+    {
+        "name": "Воробьи",
+        "image": "bird1.png",
+        "description": "Воробьи — одни из самых распространенных птиц в мире, обитающие в различных климатических зонах."
+    },
+    {
+        "name": "Совы",
+        "image": "bird2.png",
+        "description": "Совы — хищные птицы, известные своим ночным образом жизни, отличным зрением и слухом."
+    },
+    {
+        "name": "Голуби",
+        "image": "bird3.png",
+        "description": "Голуби — птицы, широко распространенные в городских и сельских районах, известны своей способностью к полету на дальние расстояния."
+    },
+    {
+        "name": "Дятлы",
+        "image": "bird4.png",
+        "description": "Дятлы — птицы, которые известны своей способностью долбить древесину, чтобы найти насекомых и создать дупло для гнездования."
+    },
+    {
+        "name": "Колибри",
+        "image": "bird5.png",
+        "description": "Колибри — самые маленькие птицы в мире, известные своим быстрым полетом и способностью парить в воздухе."
+    }
+]
+
+@app.route('/lab2/birds/')
+def birds_page():
+    return render_template('birds.html', birds=birds)  
+
