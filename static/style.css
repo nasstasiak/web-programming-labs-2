@@ -2,6 +2,7 @@ body {
     background-color: #8FBC8F;
     margin: 0px;
     height: 100%;
+    font-size: 16pt;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 h1 {
@@ -66,4 +67,23 @@ th{
 
 img {
     margin-left: 30%;
+}
+
+input{
+    border-radius: 10px;
+    border-color: #75a075;
+    background-color: #cfeacfa5;
+    font-size: 14pt;
+    font-family: cursive;
+    cursor: pointer;
+    margin: 1px;
+}
+button {
+    margin: 5px;
+    border-radius: 10px;
+    border-color: #75a075;
+    background-color: #b7dbb7bf;
+    font-size: 14pt;
+    font-family: cursive;
+    cursor: pointer;
 }

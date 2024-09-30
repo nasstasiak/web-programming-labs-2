@@ -10,6 +10,7 @@
             Anonimous,
             {% endif %}. Лабораторная работа 2</title>
     <link rel="stylesheet" href="{{url_for('static', filename='style.css')}}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='fav.png') }}">
 </head>
 <body>
     <header>
@@ -27,6 +28,7 @@
                 <li>{{ loop.index }} - {{ f.name }}: {{ f.price }} &#8381;</li>
             {% endfor %}
         </ul>
+        <a href="/lab2/">&#128072;</a>
     </main>
 
     <footer>
