@@ -597,7 +597,7 @@ def calculate(a, b):
     addition = a + b
     subtraction = a - b
     multiplication = a * b
-    division = a / b if b != 0 else "Деление на ноль"
+    division = a / b if b != 0 else ":(("
     power = a ** b
 
     return render_template('calc.html',
