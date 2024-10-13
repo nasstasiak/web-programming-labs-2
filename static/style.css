@@ -34,8 +34,8 @@ footer {
 
 div {
     margin-left: 20px;
-    color: rgb(85, 107, 47);
-    text-decoration: none;
+    /* color: rgb(85, 107, 47); */
+    /* text-decoration: none; */
 }
 
 a {
@@ -45,7 +45,7 @@ a {
 }
 main {
     padding: 10px;
-    color: rgb(85, 107, 47);
+    /* color: rgb(85, 107, 47); */
 }
 
 table{
@@ -87,3 +87,4 @@ button {
     font-family: cursive;
     cursor: pointer;
 }
+
