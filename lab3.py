@@ -25,3 +25,20 @@ def del_cookie():
     resp.delete_cookie('age')
     resp.delete_cookie('name_color')
     return resp
+
+
+@lab3.route('/lab3/form1/')
+def form1():
+    errors = {}
+   
+    user = request.args.get('user')
+    
+    if user == '':
+        errors ['user'] = 'Заполните поле "Имя"'
+
+    age = request.args.get('age')
+    if age == '':
+        errors['age'] = 'Заполните поле "Возраст"'
+
+    sex = request.args.get('sex')
+    return render_template('/lab3/form1.html', user=user, age=age, sex=sex, errors=errors)
