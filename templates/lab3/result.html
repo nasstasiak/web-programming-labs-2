@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{% block main %}
+<h2>Результаты поиска</h2>
+{% if products %}
+    <table style="padding: 10px;">
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Цена</th>
+                <th>Цвет</th>
+                <th>Бренд</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.name }}</td>
+                <td>{{ product.price }} &#8381</td>
+                <td>{{ product.color }}</td>
+                <td>{{ product.brand }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>Товары не найдены.</p>
+{% endif %}
+
+{% endblock %}

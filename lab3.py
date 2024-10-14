@@ -6,7 +6,9 @@ lab3 = Blueprint('lab3', __name__)
 def lab():
     name = request.cookies.get('name')
     name_color = request.cookies.get('name_color')
-    return render_template('lab3/lab3.html', name= name, name_color = 'name_color')
+    if name is None:
+        name = "Anonimous"
+    return render_template('lab3/lab3.html', name= name, name_color = name_color)
 
 
 @lab3.route('/lab3/cookie')
@@ -118,59 +120,103 @@ def settings():
 @lab3.route('/lab3/form2/')
 def form2():
     errors = {}
+    pass_name = request.args.get('pass_name')
+    if pass_name == '':
+        errors['pass_name'] = 'Заполните поле!'
 
-    user = request.args.get('user')
-
-    if user == '':
-        errors ['user'] = 'Заполните поле "Имя"'
-
-    age = request.args.get('age')
-
-    if age is None:
-        errors['age'] = ''#excluding typeerror
+    shelf = request.args.get('shelf')
+    bedding = request.args.get('bedding') == 'on'
+    luggage = request.args.get('luggage') == 'on'
     
-    elif age == '':
-        errors['age'] = 'Заполните поле "Возраст"'
+    age = request.args.get('age')
+    if age == None:
+        errors['age'] = ''
+    elif age =='':
+        errors['age'] = 'Заполните поле!'
     else:
-        try:
-            age = int(age)
-            if age < 1 or age > 120:
-                errors['age'] = 'Возраст должен быть от 1 до 120 лет'
-        except ValueError:
-            errors['age'] = 'Возраст должен быть числом'
+        age = int(age)
+        if age < 1 or age > 120:
+            errors['age'] = 'Возраст должен быть от 1 до 120 лет!'
 
     departure = request.args.get('departure')
-
     if departure == '':
-        errors ['departure'] = 'Заполните поле "Пункт отправления"'
+        errors['departure'] = 'Заполните поле!'
 
     destination = request.args.get('destination')
-
     if destination == '':
-        errors['destination'] = 'Заполните поле "Пункт назначения"'
+        errors['destination'] = 'Заполните поле!'
 
     date = request.args.get('date')
-
     if date == '':
-        errors['date'] = 'Заполните поле "Дата поездки"'
-
-    berth = request.args.get('berth')
-    baggage = request.args.get('baggage') == 'on'
-    linen = request.args.get('linen') == 'on'
+        errors['date'] = 'Заполните поле!'
+    
     insurance = request.args.get('insurance') == 'on'
 
-    return render_template('/lab3/form2.html', 
-                           user=user, 
+    # Устанавливаем цену в шаблоне
+    if 'age' in errors:
+        price = 0
+        ticket_type = ''
+    else:
+        if age >= 18:
+            base_price = 1000
+            ticket_type = 'Взрослый билет'
+        else:
+            base_price = 700
+            ticket_type = 'Детский билет'
+
+        if shelf in ['lower', 'lower_side']:
+            base_price += 100
+        if bedding:
+            base_price += 75
+        if luggage:
+            base_price += 250
+        if insurance:
+            base_price += 150
+
+        price = base_price
+
+    return render_template('lab3/form2.html', 
+                           errors=errors, 
+                           pass_name=pass_name, 
+                           shelf=shelf,
+                           bedding=bedding, 
+                           luggage=luggage, 
                            age=age, 
-                           departure=departure, 
+                           departure=departure,
                            destination=destination, 
                            date=date, 
-                           berth=berth, 
-                           baggage=baggage, 
-                           linen=linen, 
                            insurance=insurance, 
-                           errors=errors)
+                           ticket_type=ticket_type, 
+                           price=price)
 
 
+products = [
+    {"name": "iPhone 14", "price": 999, "color": "Black", "brand": "Apple"},
+    {"name": "Samsung Galaxy S21", "price": 799, "color": "Phantom Gray", "brand": "Samsung"},
+    {"name": "Google Pixel 6", "price": 599, "color": "Stormy Black", "brand": "Google"},
+    {"name": "OnePlus 9", "price": 729, "color": "Morning Mist", "brand": "OnePlus"},
+    {"name": "Xiaomi Mi 11", "price": 749, "color": "Horizon Blue", "brand": "Xiaomi"},
+    {"name": "Sony Xperia 1", "price": 1299, "color": "Black", "brand": "Sony"},
+    {"name": "Nokia G50", "price": 299, "color": "Navy", "brand": "Nokia"},
+    {"name": "Oppo Find X3", "price": 1149, "color": "Gloss Black", "brand": "Oppo"},
+    {"name": "Vivo X60", "price": 799, "color": "Midnight Black", "brand": "Vivo"},
+    {"name": "Realme GT", "price": 599, "color": "Dashing Silver", "brand": "Realme"},
+    {"name": "Huawei P40", "price": 899, "color": "Silver Frost", "brand": "Huawei"},
+]
 
+@lab3.route('/lab3/search')
+def search():
+    return render_template('lab3/search.html')
 
+@lab3.route('/lab3/result')
+def result():
+    min_price = request.args.get('min_price', type=float)
+    max_price = request.args.get('max_price', type=float)
+
+    filtered_products = [
+        product for product in products
+        if (min_price is None or product['price'] >= min_price) and
+           (max_price is None or product['price'] <= max_price)
+    ]
+
+    return render_template('lab3/result.html', products=filtered_products)

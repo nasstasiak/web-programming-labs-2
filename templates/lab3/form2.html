@@ -3,20 +3,21 @@
 {% block lab %}Лабораторная работа 3{% endblock %}
 
 {% block main %}
-
-    {% if user and age and departure and destination and date and berth and baggage is not none and linen is not none and insurance is not none %}
+    {% if pass_name and age and departure and destination and date and shelf and luggage is not none and bedding is not none and insurance is not none %}
     
-    <h1>Привет, {{ user }}!&#128587;&#8205;&#9792;&#65039;</h1>
+    <h1>Привет, {{ pass_name }}!&#128587;&#8205;&#9792;&#65039;</h1>
     <h2>Детали вашего билета</h2>
     
     <div>Ваш возраст: {{ age }}</div>
     <div>Пункт отправления: {{ departure }}</div>
     <div>Пункт назначения: {{ destination }}</div>
     <div>Дата поездки: {{ date }}</div>
-    <div>Тип полки: {{ berth }}</div>
-    <div>С багажом: {{ 'Да' if baggage else 'Нет' }}</div>
-    <div>С постельным бельём: {{ 'Да' if linen else 'Нет' }}</div>
+    <div>Тип полки: {{ shelf }}</div>
+    <div>С багажом: {{ 'Да' if luggage else 'Нет' }}</div>
+    <div>С постельным бельём: {{ 'Да' if bedding else 'Нет' }}</div>
     <div>Страховка: {{ 'Да' if insurance else 'Нет' }}</div>
+    <div>Тип билета: {{ ticket_type }}</div>
+    <div>Цена: {{ price }} руб.</div>
 
     <div>
         <a href="/lab3/form2/">Заполнить заново</a>
@@ -29,8 +30,8 @@
     <form>
         <label>Ваше имя:</label>
         <div>
-            <input type="text" placeholder="ФИО пассажира" name="user" value="{{ user or '' }}">
-            <span class="error">{{ errors.user }}</span>
+            <input type="text" placeholder="ФИО пассажира" name="pass_name" value="{{ pass_name or '' }}">
+            <span class="error">{{ errors.pass_name }}</span>
         </div>
 
         <label>Ваш возраст:</label>
@@ -59,28 +60,28 @@
 
         <label>Выберите полку:</label>
         <div>
-            <select name="berth">
-                <option value="нижняя" {{ berth == 'нижняя' and 'selected' }}>Нижняя</option>
-                <option value="верхняя" {{ berth == 'верхняя' and 'selected' }}>Верхняя</option>
-                <option value="нижняя боковая" {{ berth == 'нижняя боковая' and 'selected' }}>Нижняя боковая</option>
-                <option value="верхняя боковая" {{ berth == 'верхняя боковая' and 'selected' }}>Верхняя боковая</option>
+            <select name="shelf">
+                <option value="lower" {{ shelf == 'lower' and 'selected' }}>Нижняя</option>
+                <option value="upper" {{ shelf == 'upper' and 'selected' }}>Верхняя</option>
+                <option value="lower_side" {{ shelf == 'lower_side' and 'selected' }}>Нижняя боковая</option>
+                <option value="upper_side" {{ shelf == 'upper_side' and 'selected' }}>Верхняя боковая</option>
             </select>
-            <span class="error">{{ errors.berth }}</span>
+            <span class="error">{{ errors.shelf }}</span>
         </div>
 
         <label>С багажом:</label>
         <div>
-            <input type="checkbox" name="baggage">
+            <input type="checkbox" name="luggage" {% if luggage %}checked{% endif %}>
         </div>
 
         <label>С постельным бельём:</label>
         <div>
-            <input type="checkbox" name="linen">
+            <input type="checkbox" name="bedding" {% if bedding %}checked{% endif %}>
         </div>
 
         <label>Нужна страховка:</label>
         <div>
-            <input type="checkbox" name="insurance">
+            <input type="checkbox" name="insurance" {% if insurance %}checked{% endif %}>
         </div>
 
         <div>
