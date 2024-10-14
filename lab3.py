@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, make_response, redirect
+from flask import Blueprint, render_template, request, make_response, redirect, url_for
 lab3 = Blueprint('lab3', __name__)
 
 
@@ -76,3 +76,101 @@ def paid():
     global price 
     
     return render_template('lab3/paid.html', price=price)
+
+
+@lab3.route('/lab3/settings/')
+def settings():
+    color = request.args.get('color')
+    bgcolor = request.args.get('bgcolor')
+    fsize = request.args.get('fsize')
+    fontfamily = request.args.get('fontfamily')
+    textalign = request.args.get('textalign')
+
+    if color:
+        resp = make_response(redirect('/lab3/settings/'))
+        resp.set_cookie('color', color)
+        return resp
+    if bgcolor:
+        resp = make_response(redirect('/lab3/settings/'))
+        resp.set_cookie('bgcolor', bgcolor)
+        return resp
+    if fsize:
+        resp = make_response(redirect('/lab3/settings/'))
+        resp.set_cookie('fsize', fsize)
+        return resp
+    if fontfamily:
+        resp = make_response(redirect('/lab3/settings/'))
+        resp.set_cookie('fontfamily', fontfamily)
+        return resp
+    if textalign:
+        resp = make_response(redirect('/lab3/settings/'))
+        resp.set_cookie('textalign', textalign)
+        return resp
+    
+    color = request.cookies.get('color')
+    bgcolor = request.cookies.get('bgcolor') 
+    fsize = request.cookies.get('fsize') 
+    fontfamily  = request.cookies.get('fontfamily')
+    resp = make_response(render_template('lab3/settings.html', color=color, bgcolor=bgcolor,fsize=fsize, fontfamily=fontfamily, textalign=textalign))
+    return resp
+
+
+@lab3.route('/lab3/form2/')
+def form2():
+    errors = {}
+
+    user = request.args.get('user')
+
+    if user == '':
+        errors ['user'] = 'Заполните поле "Имя"'
+
+    age = request.args.get('age')
+
+    if age is None:
+        errors['age'] = ''#excluding typeerror
+    
+    elif age == '':
+        errors['age'] = 'Заполните поле "Возраст"'
+    else:
+        try:
+            age = int(age)
+            if age < 1 or age > 120:
+                errors['age'] = 'Возраст должен быть от 1 до 120 лет'
+        except ValueError:
+            errors['age'] = 'Возраст должен быть числом'
+
+    departure = request.args.get('departure')
+
+    if departure == '':
+        errors ['departure'] = 'Заполните поле "Пункт отправления"'
+
+    destination = request.args.get('destination')
+
+    if destination == '':
+        errors['destination'] = 'Заполните поле "Пункт назначения"'
+
+    date = request.args.get('date')
+
+    if date == '':
+        errors['date'] = 'Заполните поле "Дата поездки"'
+
+    berth = request.args.get('berth')
+    baggage = request.args.get('baggage') == 'on'
+    linen = request.args.get('linen') == 'on'
+    insurance = request.args.get('insurance') == 'on'
+
+    return render_template('/lab3/form2.html', 
+                           user=user, 
+                           age=age, 
+                           departure=departure, 
+                           destination=destination, 
+                           date=date, 
+                           berth=berth, 
+                           baggage=baggage, 
+                           linen=linen, 
+                           insurance=insurance, 
+                           errors=errors)
+
+
+
+

@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{# Номер лабораторной работы: #}
+{% block lab %}Лабораторная работа 3{% endblock %}
+
+{# Основной контент: #}
+{% block main %}
+    <h1>Cookies</h1>
+    <form>
+        <div>
+            <label for="color">Выберите цвет текста:</label>
+            <input type="color" id="color" name="color" value="{{ color or '' }}">
+        </div>
+
+        <div>
+            <button type="submit">ОK</button>
+        </div>        
+    </form>
+    
+    <form>
+        <div>
+            <label for="color">Выберите цвет фона:</label>
+            <input type="color" id="bgcolor" name="bgcolor" value="{{ bgcolor or '' }}">
+        </div>
+        <div>
+            <button type="submit">ОK</button>
+        </div>
+    </form>
+
+    <form>
+        <div>
+            <label for="fsize">Выберите размер шрифта:</label>
+            <select id="fsize" name="fsize">
+                <option value="10" {{ fsize == '10' and 'selected' }}>10</option>
+                <option value="11" {{ fsize == '11' and 'selected' }}>11</option>
+                <option value="12" {{ fsize == '12' and 'selected' }}>12</option>
+                <option value="14" {{ fsize == '14' and 'selected' }}>14</option>
+                <option value="16" {{ fsize == '16' and 'selected' }}>16</option>
+                <option value="18" {{ fsize == '18' and 'selected' }}>18</option>
+                <option value="20" {{ fsize == '20' and 'selected' }}>20</option>
+                <option value="22" {{ fsize == '22' and 'selected' }}>22</option>
+                <option value="24" {{ fsize == '24' and 'selected' }}>24</option>
+                <option value="26" {{ fsize == '26' and 'selected' }}>26</option>
+                <option value="28" {{ fsize == '28' and 'selected' }}>28</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">ОK</button>
+        </div>
+    </form>
+
+    <form>
+        <div>
+            <label for="textalign">Выберите выравнивание текста:</label>
+            <select id="textalign" name="textalign">
+                <option value="left" {{ textalign == 'left' and 'selected' }}>Слева</option>
+                <option value="center" {{ textalign == 'center' and 'selected' }}>По центру</option>
+                <option value="right" {{ textalign == 'right' and 'selected' }}>Справа</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">ОK</button>
+        </div>
+    </form>
+
+    <form>
+        <div>
+            <label for="fontfamily">Выберите название шрифта:</label>
+            <select id="fontfamily" name="fontfamily">
+                <option value="Candara" {{ ffamily == 'Candara' and 'selected' }}>Candara</option>
+                <option value="Arial Black" {{ ffamily == 'Arial Black' and 'selected' }}>Arial Black</option>
+                <option value="BRUSH SCRIPT MT" {{ ffamily == 'BRUSH SCRIPT MT' and 'selected' }}>Brush Script MT</option>
+                <option value="Bookman Old Style" {{ ffamily == 'Bookman Old Style' and 'selected' }}>Bookman Old Style</option>
+                <option value="Courier" {{ ffamily == 'Courier' and 'selected' }}>Courier</option>
+                <option value="franklin gothic medium" {{ ffamily == 'franklin gothic medium' and 'selected' }}>Franklin Gothic Medium</option>
+                <option value="Garamond" {{ ffamily == 'Garamond' and 'selected' }}>Garamond</option>
+                <option value="Arial Narrow" {{ ffamily == 'Arial Narrow' and 'selected' }}>Arial Narrow</option>
+                <option value="matura mt script capitals" {{ ffamily == 'matura mt script capitals' and 'selected' }}>Matura MT</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit">ОK</button>
+        </div>
+    </form>
+    
+{% endblock %}

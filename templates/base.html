@@ -1,24 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Кузьмина Анастасия. {% block lab %}{% endblock %}</title>
-        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-        <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
-    </head>
-    <body>
-        <header>
-            НГТУ, ФБ, WEB-программирование часть 2. {{ self.lab() }}
-        </header>
 
-        <main>
-            {% block main %}{% endblock %}
-        </main>
-        
-        <footer>
-            <a href="/" style="text-align: left;">&#9996;</a>
-            &copy; Кузьмина Анастасия, ФБИ-22, 3 курс, 2024
-        </footer>
-    </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Кузьмина Анастасия. {% block lab %}{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.png') }}">
+    <style>
+        body{
+            {% if request.cookies.get('color') %}
+                color: {{ request.cookies.get('color') }};
+            {% endif %}
+
+            {% if request.cookies.get('bgcolor') %}
+                background-color: {{ request.cookies.get('bgcolor') }};
+            {% endif %}
+
+            {% if request.cookies.get('fsize') %}
+                font-size: {{ request.cookies.get('fsize') + 'pt' }} ;
+            {% endif %}
+
+            {% if request.cookies.get('textalign') %}
+                text-align: {{ request.cookies.get('textalign') }};
+            {% endif %}
+
+            {% if request.cookies.get('fontfamily') %}
+                font-family: {{ request.cookies.get('fontfamily') }} ;
+            {% endif %}
+        }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        НГТУ, ФБ, WEB-программирование часть 2. {{ self.lab() }}
+    </header>
+
+    <main>
+        {% block main %}{% endblock %}
+    </main>
+
+    <footer>
+        <a href="/" style="text-align: left;">&#9996;</a>
+        &copy; Кузьмина Анастасия, ФБИ-22, 3 курс, 2024
+    </footer>
+</body>
+
 </html>

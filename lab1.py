@@ -32,8 +32,8 @@ def author():
 
 @lab1.route("/lab1/oak")
 def oak():
-    path = url_for("static", filename="oak.png")
-    style = url_for("static", filename="lab1.css")
+    path = url_for("static", filename="lab1/oak.jpg")
+    style = url_for("static", filename="lab1/lab1.css")
     return '''
 <!DOCTYPE html>
 <html>
@@ -203,7 +203,7 @@ def internal_server_error():
 
 @lab1.route("/lab1/headers")
 def headers():
-    island = url_for("static", filename="island.webp")
+    island = url_for("static", filename="lab1/island.webp")
     return '''
 <!doctype html>
 <html>
@@ -309,7 +309,7 @@ def tower_status():
 @lab1.route('/lab1/built')
 def create_tower():
     style = url_for("static", filename="style.css")
-    tower = url_for("static", filename="tower.png")
+    tower = url_for("static", filename="lab1/tower.png")
     global tower_built
     
     if tower_built:
@@ -346,7 +346,7 @@ def create_tower():
 @lab1.route('/lab1/drop')
 def drop_tower():
     style = url_for("static", filename="style.css")
-    ruin = url_for("static", filename="ruins.png")
+    ruin = url_for("static", filename="lab1/ruins.png")
     global tower_built    
     if tower_built:
         tower_built = False

@@ -21,18 +21,18 @@ def example():
         {'name': 'манго', 'price': 315},
         {'name': 'персики', 'price': 140},
         ]
-    return render_template('example.html', name=name, lab_num=lab_num, group=group, course=course, fruits=fruits)
+    return render_template('lab2/example.html', name=name, lab_num=lab_num, group=group, course=course, fruits=fruits)
 
 
 @lab2.route('/lab2/')
 def lab():
-    return render_template('lab2.html')
+    return render_template('lab2/lab2.html')
 
 
 @lab2.route('/lab2/filters/')
 def filters():
     phrase = 'О <b>сколько</b> <u>нам</u> <i>открытий</i> чудных...'
-    return render_template('filter.html', phrase=phrase)
+    return render_template('lab2/filter.html', phrase=phrase)
 
 flower_list = [
     {'name': 'Роза', 'price': 70},
@@ -59,14 +59,14 @@ def flowers(flower_id):
 ''', 404
     else:
         flower = flower_list[flower_id]
-    return render_template('flower_detail.html', flower=flower, flower_id=flower_id)   
+    return render_template('lab2/flower_detail.html', flower=flower, flower_id=flower_id)   
 
 
 @lab2.route('/lab2/flowers/')
 def all_flowers():
-    flowers=flower_list
+    flower=flower_list
     length = len(flower_list)
-    return render_template('flowers.html', flower_list=flowers, length=length)
+    return render_template('lab2/flowers.html', flower_list=flower, length=length)
 
 
 @lab2.route('/lab2/add_flower/')
@@ -142,7 +142,7 @@ def calculate(a, b):
     division = a / b if b != 0 else ":(("
     power = a ** b
 
-    return render_template('calc.html',
+    return render_template('lab2/calc.html',
                            a=a,
                            b=b,
                            addition=addition,
@@ -177,7 +177,7 @@ books = [
 
 @lab2.route("/lab2/books")
 def book():
-    return render_template("books.html", books=books)
+    return render_template("lab2/books.html", books=books)
 
 
 birds = [
@@ -210,5 +210,5 @@ birds = [
 
 @lab2.route('/lab2/birds/')
 def birds_page():
-    return render_template('birds.html', birds=birds)  
+    return render_template('lab2/birds.html', birds=birds)  
 
