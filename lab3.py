@@ -126,6 +126,7 @@ def clear_cookie():
     resp.delete_cookie('color')
     resp.delete_cookie('bgcolor')
     resp.delete_cookie('fsize')
+    resp.delete_cookie('fontfamily')
     resp.delete_cookie('textalign')
     return resp
 
@@ -228,7 +229,7 @@ products = [
 ]
 
 
-@lab3.route('/lab3/search')
+@lab3.route('/lab3/search/')
 def search():
     return render_template('lab3/search.html')
 
