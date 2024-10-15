@@ -117,6 +117,16 @@ def settings():
     return resp
 
 
+@lab3.route('/lab3/clear_cookie')
+def clear_cookie():
+    resp = make_response(redirect('/lab3/settings/'))
+    resp.delete_cookie('color')
+    resp.delete_cookie('bgcolor')
+    resp.delete_cookie('fsize')
+    resp.delete_cookie('textalign')
+    return resp
+
+
 @lab3.route('/lab3/form2/')
 def form2():
     errors = {}
@@ -204,9 +214,11 @@ products = [
     {"name": "Huawei P40", "price": 899, "color": "Silver Frost", "brand": "Huawei"},
 ]
 
+
 @lab3.route('/lab3/search')
 def search():
     return render_template('lab3/search.html')
+
 
 @lab3.route('/lab3/result')
 def result():
