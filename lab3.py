@@ -215,6 +215,16 @@ products = [
     {"name": "Vivo X60", "price": 799, "color": "Midnight Black", "brand": "Vivo"},
     {"name": "Realme GT", "price": 599, "color": "Dashing Silver", "brand": "Realme"},
     {"name": "Huawei P40", "price": 899, "color": "Silver Frost", "brand": "Huawei"},
+    {"name": "Motorola Edge", "price": 699, "color": "Thunder Gray", "brand": "Motorola"},
+    {"name": "LG Velvet", "price": 599, "color": "Aurora White", "brand": "LG"},
+    {"name": "Asus ROG Phone 5", "price": 999, "color": "Black", "brand": "Asus"},
+    {"name": "ZTE Axon 20", "price": 449, "color": "Black", "brand": "ZTE"},
+    {"name": "Honor 50", "price": 549, "color": "Midnight Black", "brand": "Honor"},
+    {"name": "TCL 20 Pro", "price": 499, "color": "Moondust Gray", "brand": "TCL"},
+    {"name": "Alcatel 3X", "price": 199, "color": "Gradient Green", "brand": "Alcatel"},
+    {"name": "Panasonic Eluga I7", "price": 150, "color": "Black", "brand": "Panasonic"},
+    {"name": "BlackBerry Key2", "price": 649, "color": "Black", "brand": "BlackBerry"},
+    {"name": "Microsoft Surface Duo", "price": 1399, "color": "Glacier", "brand": "Microsoft"},
 ]
 
 
