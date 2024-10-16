@@ -100,3 +100,8 @@ select {
     margin: 1px;
     color: rgb(85, 107, 47);
 }
+
+label {
+    color: rgb(85, 107, 47); 
+    font-family: cursive;
+}

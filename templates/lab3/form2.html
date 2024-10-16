@@ -3,7 +3,7 @@
 {% block lab %}Лабораторная работа 3{% endblock %}
 
 {% block main %}
-    {% if pass_name and age and departure and destination and date and shelf and luggage is not none and bedding is not none and insurance is not none %}
+    {% if pass_name and age and departure and destination and date and shelf %}
     
     <h1>Привет, {{ pass_name }}!&#128587;&#8205;&#9792;&#65039;</h1>
     <h2>Детали вашего билета</h2>
@@ -12,7 +12,15 @@
     <div>Пункт отправления: {{ departure }}</div>
     <div>Пункт назначения: {{ destination }}</div>
     <div>Дата поездки: {{ date }}</div>
-    <div>Тип полки: {{ shelf }}</div>
+    {% if shelf == 'lower' %}
+    <div>Тип полки: Нижняя</div>
+    {% elif shelf == 'upper' %}
+        <div>Тип полки: Верхняя</div>
+    {% elif shelf == 'lower_side' %}
+        <div>Тип полки: Нижняя боковая</div>
+    {% elif shelf == 'upper_side' %}
+        <div>Тип полки: Верхняя боковая</div>
+    {% endif %}
     <div>С багажом: {{ 'Да' if luggage else 'Нет' }}</div>
     <div>С постельным бельём: {{ 'Да' if bedding else 'Нет' }}</div>
     <div>Страховка: {{ 'Да' if insurance else 'Нет' }}</div>
