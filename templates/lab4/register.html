@@ -3,24 +3,39 @@
 {% block lab %}Лабораторная работа 4{% endblock %}
 
 {% block main %}
-    <h1 style="text-align: center; color: #2D1479;">Холодильник</h1>
+    <h1>Регистрация</h1>
 
-    {% if error %}
-        <h2 style="border: 7px double #edfdce; border-radius: 40px; padding: 5px 5px 5px;
-                text-align: center; width: 250px; margin: 0 auto;" class="error">{{ error }}</h2>
-    {% else %}
-        <div class="temp">
-            <h2>Установлена температура: {{ temperature }}°C</h2>
+    <form method="post">
+        <div>
+            <label>Логин:</label>
+            <input type="text" id="login" name="login">
+        </div>
 
-            {% if temperature <= -9 and temperature >= -12 %}
-                <h2>&#x2744;&#xFE0F;&#x2744;&#xFE0F;&#x2744;&#xFE0F;</h2>
-            {% elif temperature <= -5 and temperature >= -8 %}
-                <h2>&#x2744;&#xFE0F;&#x2744;&#xFE0F;</h2>
-            {% elif temperature <= -1 and temperature >= -4 %}
-                <h2>&#x2744;&#xFE0F;</h2>
-            {% endif %}
-        </div>        
-    {% endif %}<br> 
+        <div>
+            <label>Пароль:</label>
+            <input type="password" id="password" name="password">
+        </div>
 
-    <a href="/lab4/fridge-form">&#128072;</a>
+        <div>
+            <label>Имя:</label>
+            <input type="text" id="name" name="name">
+        </div>
+
+        <div>
+            <label>Пол:</label>
+            <select id="gender" name="gender">
+                <option value="женский">женский</option>
+                <option value="мужской">мужской</option>            
+            </select>
+        </div>
+
+        <div class="error">{{ error }}</div>
+
+        <div>
+            <button type="submit">Зарегистрироваться</button>
+            <button type="reset">Отмена</button>
+        </div>
+
+    <a href="/lab4/login">Войти &#128073;</a><br>
+    <a href="/lab4/">&#128072;</a>
 {% endblock %}

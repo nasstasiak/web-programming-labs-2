@@ -92,6 +92,13 @@ button {
     color: rgb(85, 107, 47);
 }
 
+button:disabled {
+    background-color: #a8c3a8; /* светло-серый фон */
+    color: rgb(139, 159, 103); /* бледный текст */
+    cursor: not-allowed; /* курсор 'недоступно' */
+    border-color: #7f957f8d;
+}
+
 select {
     border-radius: 10px;
     border-color: #75a075;
