@@ -125,10 +125,10 @@ def tree():
 
 
 users = [
-    {'login': 'alex', 'password': '123', 'name': 'Алекс Тёрнер', 'gender': 'мужской'},
-    {'login': 'bob', 'password': '555', 'name': 'Роберт Дилан', 'gender': 'мужской'},
-    # {'login': 'mar', 'password': '1304', 'name': 'Мария Бызова', 'gender': 'женский'},
-    # {'login': 'ksu', 'password': '1810', 'name': 'Ксения Бызова', 'gender': 'женский'}
+    {'login': 'alex', 'password': '123', 'name': 'Алекс Браун', 'gender': 'мужской'},
+    {'login': 'bob', 'password': '555', 'name': 'Роберт Смит', 'gender': 'мужской'},
+    {'login': 'sstasia', 'password': '0605', 'name': 'Анастасия Кузьмина', 'gender': 'женский'},
+    {'login': 'kventin', 'password': '1004', 'name': 'Квентин Прохорович', 'gender': 'мужской'}
 ]
 
 @lab4.route('/lab4/login/', methods = ['GET', 'POST'])
@@ -185,18 +185,6 @@ def register():
             error = 'Все поля обязательны'
             return render_template('/lab4/register.html', error=error)
 
-        # if login == '':
-        #     error = 'Все поля обязательны'
-        #     return render_template('/lab4/register.html', error=error)
-
-        # if password == '':
-        #     error = 'Все поля обязательны'
-        #     return render_template('/lab4/register.html', error=error)
-
-        # if name == '':
-        #     error = 'Все поля обязательны'
-        #     return render_template('/lab4/register.html', error=error)
-            
         for user in users:
             if user['login'] == login:
                 error = 'Логин уже занят'
