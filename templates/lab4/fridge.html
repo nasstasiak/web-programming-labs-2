@@ -3,11 +3,10 @@
 {% block lab %}Лабораторная работа 4{% endblock %}
 
 {% block main %}
-    <h1 style="text-align: center; color: #2D1479;">Холодильник</h1>
+    <h1>Холодильник &#9924;</h1>
 
     {% if error %}
-        <h2 style="border: 7px double #edfdce; border-radius: 40px; padding: 5px 5px 5px;
-                text-align: center; width: 250px; margin: 0 auto;" class="error">{{ error }}</h2>
+        <h2 class="error">{{ error }}</h2>
     {% else %}
         <div class="temp">
             <h2>Установлена температура: {{ temperature }}°C</h2>

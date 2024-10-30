@@ -98,6 +98,9 @@ def exp():
     if x1 == '' or x2 == '':
         return render_template('/lab4/exp.html', error='Оба поля должны быть заполнены!')
     
+    if int(x1) == 0 and int(x2) == 0:
+        return render_template('/lab4/exp.html', error='Ошибка! Получается неопределенность')
+    
     x1 = int(x1)
     x2 = int(x2)
 
@@ -181,8 +184,8 @@ def register():
         name = request.form.get('name')
         gender = request.form.get('gender')
 
-        if not login or not password or not name:
-            error = 'Все поля обязательны'
+        if login == '' or password == '' or name == '':
+            error = 'Все поля обязательны!'
             return render_template('/lab4/register.html', error=error)
 
         for user in users:

@@ -4,10 +4,10 @@
 
 {% block main %}
     <h1>Заказ зерна</h1>
-    <div style="color: #C7EB93; font-weight: bold; font-size: 16pt;">Заказ успешно оформлен!</div>
+    <div>Заказ оформлен</div>
     
     <div>
-        Вы заказали <span style="color: #C7EB93;">{{ seed }}</span> весом в {{ weight }} тонн.<br>
+        Вы заказали {{ seed }}весом в {{ weight }} тонн.<br>
         Сумма к оплате: {{ total_cost }} &#8381<br>
 
         {% if discount %}
