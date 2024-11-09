@@ -7,11 +7,7 @@ lab5 = Blueprint('lab5', __name__)
 
 @lab5.route('/lab5/')
 def lab():
-    name = request.cookies.get('name')
-
-    if name is None:
-        name = "Anonymous"
-    return render_template('lab5/lab5.html', name=name)
+    return render_template ('lab5/lab5.html', login=session.get('login'))
 
 
 def db_connect():
@@ -56,4 +52,32 @@ def register():
     db_close(conn, cur)
     return render_template('lab5/success.html', login=login)
 
+
+@lab5.route('/lab5/login/', methods = ['GET', 'POST'])
+def login():
+    if request.method == 'GET':
+        return render_template('lab5/login.html')
+    
+    login = request.form.get('login')
+    password = request.form.get('password')
+
+    if not (login or password):
+        return render_template('lab5/login.html', error='Заполните поля')
+    
+    conn, cur = db_connect()
+
+    cur.execute("SELECT * FROM users WHERE login=%s;", (login, ))
+    user = cur.fetchone()
+
+    if not user:
+        db_close(conn, cur)
+        return render_template('lab5/login.html', error='Логин и/или пароль неверны')
+    
+    if not check_password_hash(user['password'],password):
+        db_close(conn, cur)
+        return render_template('lab5/login.html', error='Логин и/или пароль неверны')
+    
+    session['login'] = login
+    db_close(conn, cur)
+    return render_template('lab5/success_login.html', login=login)     
 
