@@ -1,4 +1,5 @@
 from flask import Flask, url_for
+from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
 from lab4 import lab4
@@ -40,7 +41,8 @@ def labs():
         <a href="/lab1">Лабораторная работа 1</a><br>
         <a href="/lab2/">Лабораторная работа 2</a><br>
         <a href="/lab3">Лабораторная работа 3</a><br>
-        <a href="/lab4">Лабораторная работа 4</a>
+        <a href="/lab4">Лабораторная работа 4</a><br>
+        <a href="/lab5">Лабораторная работа 5</a>
         </div>
     </main>
 
