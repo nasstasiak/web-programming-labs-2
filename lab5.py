@@ -4,8 +4,6 @@ from psycopg2.extras import RealDictCursor
 from werkzeug.security import check_password_hash, generate_password_hash
 import sqlite3
 from os import path
-
-
 lab5 = Blueprint('lab5', __name__)
 
 
@@ -40,7 +38,7 @@ def db_close(conn, cur):
     conn.close()
 
 
-@lab5.route('/lab5/register/', methods = ['GET', 'POST'])
+@lab5.route('/lab5/register', methods = ['GET', 'POST'])
 def register():
     if request.method == 'GET':
         return render_template('lab5/register.html')
@@ -53,23 +51,30 @@ def register():
     
     conn, cur = db_connect()
 
-    cur.execute("SELECT login FROM users WHERE login=%s;", (login, ))
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT login FROM users WHERE login=%s;", (login, ))
+    else:
+        cur.execute("SELECT login FROM users WHERE login=?;", (login, ))
+
     if cur.fetchone():
         db_close(conn, cur)
         return render_template ('lab5/register.html', error='Такой пользователь уже существует')
     
     password_hash = generate_password_hash(password)
-    cur.execute("INSERT INTO users (login, password) VALUES (%s, %s)", (login, password_hash))
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("INSERT INTO users (login, password) VALUES (%s, %s);", (login, password_hash))
+    else:
+        cur.execute("INSERT INTO users (login, password) VALUES (?, ?);", (login, password_hash))
 
     db_close(conn, cur)
     return render_template('lab5/success.html', login=login)
 
 
-@lab5.route('/lab5/login/', methods = ['GET', 'POST'])
+@lab5.route('/lab5/login', methods = ['GET', 'POST'])
 def login():
     if request.method == 'GET':
         return render_template('lab5/login.html')
-    
+
     login = request.form.get('login')
     password = request.form.get('password')
 
@@ -78,7 +83,10 @@ def login():
     
     conn, cur = db_connect()
 
-    cur.execute("SELECT * FROM users WHERE login=%s;", (login, ))
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM users WHERE login=%s;", (login, ))
+    else:
+        cur.execute("SELECT * FROM users WHERE login=?;", (login, ))
     user = cur.fetchone()
 
     if not user:
@@ -91,10 +99,10 @@ def login():
     
     session['login'] = login
     db_close(conn, cur)
-    return render_template('lab5/success_login.html', login=login)     
+    return render_template('lab5/success_login.html', login=login)
 
 
-@lab5.route('/lab5/create/', methods = ['GET', 'POST'])
+@lab5.route('/lab5/create', methods = ['GET', 'POST'])
 def create():
     login = session.get('login')
     if not login:
@@ -108,29 +116,41 @@ def create():
 
     conn, cur = db_connect()
 
-    cur.execute("SELECT * FROM users WHERE login=%s;", (login, ))
-    user_id = cur.fetchone()["id"]
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM users WHERE login=%s;", (login, ))
+    else:
+        cur.execute("SELECT * FROM users WHERE login=?;", (login, ))
+    login_id = cur.fetchone()["id"]
 
-    cur.execute("INSERT INTO articles(user_id, title, article_text) \
-                VALUES (%s, %s, %s)", (user_id, title, article_text))
-    # cur.fetchone()
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("INSERT INTO articles(login_id, title, article_text) \
+                    VALUES (%s, %s, %s);", (login_id, title, article_text))
+    else:
+        cur.execute("INSERT INTO articles(login_id, title, article_text) \
+                    VALUES (?, ?, ?);", (login_id, title, article_text))
 
     db_close(conn, cur)
     return redirect('/lab5/')
 
 
-@lab5.route('/lab5/list/')  
-def lists():
-    login  = session.get('login')
+@lab5.route('/lab5/list')
+def list():
+    login = session.get('login')
     if not login:
         return redirect('/lab5/login')
     
     conn, cur = db_connect()
 
-    cur.execute("SELECT id FROM users WHERE login=%s;", (login, ))
-    user_id = cur.fetchone()["id"]
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT id FROM users WHERE login=%s;", (login, ))
+    else:
+        cur.execute("SELECT id FROM users WHERE login=?;", (login, ))
+    login_id = cur.fetchone()["id"]
 
-    cur.execute(f"SELECT * FROM articles WHERE user_id=%s;", (user_id, ))
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM articles WHERE login_id=%s;", (login_id, ))
+    else:
+        cur.execute("SELECT * FROM articles WHERE login_id=?;", (login_id, ))
     articles = cur.fetchall()
 
     db_close(conn, cur)
