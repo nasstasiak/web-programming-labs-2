@@ -4,10 +4,12 @@ from lab2 import lab2
 from lab3 import lab3
 from lab4 import lab4
 from lab5 import lab5
+import os
 
 app = Flask(__name__)
 
-app.secret_key = 'секретно-секретный секрет'
+app.config['SECRET_KEY'] = os.environ.get('SEKRET_KEY', 'секретно-секретный-секрет')
+app.config['DB_TYPE'] = os.environ.get('DB_TYPE', 'postgres')
 
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
