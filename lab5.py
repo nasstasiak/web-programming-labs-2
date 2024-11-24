@@ -318,6 +318,8 @@ def public(article_id):
 
     return redirect('/lab5/list')
 
+
+
 @lab5.route('/lab5/private/<int:article_id>', methods=['POST'])
 def private(article_id):
     login = session.get('login')
