@@ -1,5 +1,4 @@
-from flask import Blueprint, render_template, Blueprint, request, redirect, session, current_app
-session, current_app
+from flask import Blueprint, render_template, request, redirect, session, current_app
 from os import path
 import sqlite3
 import psycopg2
