@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block lab %}Лабораторная работа 7{% endblock %}
+
+{% block script %}
+    <script src="{{ url_for('static', filename='lab7/main.js') }}"></script>
+    <style>
+        .modal {
+            display: none;
+            z-index: 100;
+            box-shadow: 10px 10px 20px #3e3e60;
+            border-radius: 5%;
+            background: #5b9c7c;
+            color:#216241;
+            width: 300px; 
+            left: 55%; 
+            top: 60px;
+            margin-left: -200px; 
+            position: absolute;
+            padding: 15px; 
+            text-align: center;
+        }
+        .error-message {
+            color:  #dcc17a;
+            font-weight: bold;
+            text-align: center; 
+        }
+    </style>
+{% endblock %}
+
+{% block main %}
+<h1>Список фильмов</h1>
+
+<table>
+    <thead>
+        <tr>
+            <th colspan="2">Название</th>
+            <th>Год</th>
+            <th>Действие</th>
+        </tr>
+    </thead>
+    <tbody id="film-list"></tbody>
+</table>
+
+<script>
+    fillFilmList();
+</script>
+
+<div>
+    <button onclick="addFilm()">Добавить фильм</button>
+</div>
+
+<div class="modal">
+    <input type="hidden" id="id">
+    <label>
+        Название фильма на русском:<br>
+        <input type="text" id="title_ru">
+        <div id="title_ru-error" class="error-message"></div>
+    </label><br>
+
+    <label>
+        Название фильма в оригинале<br>
+        <i>(если фильм русский, то оставьте пустым):</i><br>
+        <input type="text" id="title">
+        <div id="title-error" class="error-message"></div>
+    </label><br>
+
+    <label>
+        Год выпуска:<br>
+        <input type="number" id="year">
+        <div id="year-error" class="error-message"></div>
+    </label><br>
+
+    <label>
+        Описание:<br>
+        <textarea id="description"></textarea>
+        <div id="description-error" class="error-message"></div>
+    </label><br>
+
+    <button onclick="sendFilm()">Ok</button>
+    <button onclick="cancel()">Отмена</button>
+</div>
+    <a href="/index">&#128072;</a>
+{% endblock %}

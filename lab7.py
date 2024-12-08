@@ -1,90 +1,143 @@
-from flask import Blueprint, render_template, request, jsonify
-from datetime import datetime
+import psycopg2
 from psycopg2.extras import RealDictCursor
+import sqlite3
+from os import path
+from flask import  render_template, Blueprint, request, jsonify, current_app
+from datetime import datetime
 
 lab7 = Blueprint('lab7', __name__)
 
 
+def db_connect():
+    if current_app.config['DB_TYPE'] == 'postgres':
+        conn = psycopg2.connect(
+            host = '127.0.0.1',
+            database = 'anastasia_kuzmina_knowledge_base',
+            user = 'anastasia_kuzmina_knowledge_base',
+            password = '123'
+        )
+        cur = conn.cursor(cursor_factory = RealDictCursor)
+    else:
+        dir_path = path.dirname(path.realpath(__file__))
+        db_path = path.join(dir_path, "database.db")
+        conn = sqlite3.connect(db_path)
+        conn.row_factory = sqlite3.Row
+        cur = conn.cursor()
+
+    return conn, cur
+
+def db_close(conn, cur):
+    conn.commit()
+    cur.close()
+    conn.close()
+
+
 @lab7.route('/lab7/')
 def main():
-    return render_template('lab7/index.html')
-
-films = [
-    {
-        "title": "The Count of Monte Cristo",
-        "title_ru": "Граф Монте-Кристо",
-        "year": 2024,
-        "description": "Марсельский моряк Эдмон Дантес (Пьер Нинэ) женится на Мерседес Эррере \
-            (Анаис Демустье). Однако жених становится жертвой заговора, ровно в день свадьбы его \
-            арестовывают и отправляют за решётку. После 14 лет в замке Иф Эдмону удаётся бежать. \
-            Благодаря другу аббату Фариа (Пьерфранческо Фавино) вчерашний заключённый находит \
-            сокровище, становится богат и превращается в графа Монте-Кристо. Он намерен\
-            во что бы то ни стало отомстить врагам, из-за которых всю молодость ему пришлось \
-            провести в тюрьме. Премьера картины прошла на Каннском фестивале 2024 года. Режиссёрами \
-            выступили французы Александр де Ла Пательер и Матьё Делапорт, авторы драмеди «Лучшее впереди»."
-    },
-    {
-        "title": "Shutter Island",
-        "title_ru": "Остров проклятых",
-        "year": 2009,
-        "description": "Два американских судебных пристава отправляются на один из островов в штате Массачусетс, \
-        чтобы расследовать исчезновение пациентки клиники для умалишенных преступников. При проведении \
-        расследования им придется столкнуться с паутиной лжи, обрушившимся ураганом и смертельным бунтом обитателей клиники."
-    },
-    {
-        "title": "Sen to Chihiro no kamikakushi",
-        "title_ru": "Унесённые призраками",
-        "year": 2001,
-        "description": "Тихиро с мамой и папой переезжает в новый дом. Заблудившись по дороге, они оказываются в \
-        странном пустынном городе, где их ждет великолепный пир. Родители с жадностью набрасываются на еду и к ужасу \
-        девочки превращаются в свиней, став пленниками злой колдуньи Юбабы. Теперь, оказавшись одна среди волшебных \
-        существ и загадочных видений, Тихиро должна придумать, как избавить своих родителей от чар коварной старухи."
-    },
-    {
-        "title": "Coco",
-        "title_ru": "Тайна Коко",
-        "year": 2017,
-        "description": "12-летний Мигель живёт в мексиканской деревушке в семье сапожников и тайно мечтает стать музыкантом. \
-        Тайно, потому что в его семье музыка считается проклятием. Когда-то его прапрадед оставил жену, прапрабабку Мигеля, \
-        ради мечты, которая теперь не даёт спокойно жить и его праправнуку. С тех пор музыкальная тема в семье стала табу. \
-        Мигель обнаруживает, что между ним и его любимым певцом Эрнесто де ла Крусом, ныне покойным, существует некая связь. \
-        Паренёк отправляется к своему кумиру в Страну Мёртвых, где встречает души предков. Мигель знакомится там с духом-скелетом \
-        по имени Гектор, который становится его проводником. Вдвоём они отправляются на поиски де ла Круса."
-    }
-]
+    return render_template('lab7/lab7.html')
 
 
 @lab7.route('/lab7/rest-api/films/', methods=['GET'])
 def get_films():
+    conn, cur = db_connect()
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM films ORDER BY id")
+    else:
+        cur.execute("SELECT * FROM films ORDER BY id")
+    films = cur.fetchall()
+    db_close(conn, cur)
     return jsonify(films)
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>/', methods=['GET'])
 def get_film(id):
-    if id < 0 or id >= len(films):
-        return 'Такого фильма нет', 404 
-    return films[id]
+    conn, cur = db_connect()
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("SELECT * FROM films WHERE id = %s", (id,))
+    else:
+        cur.execute("SELECT * FROM films WHERE id = ?", (id,))
+    film = cur.fetchone()
+    db_close(conn, cur)
+    if film is None:
+        return 'Такого фильма нет :(', 404
+    return jsonify(film)
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>/', methods=['DELETE'])
 def del_film(id):
-    if id < 0 or id >= len(films):
-        return 'Такого фильма нет', 404 
-    del films[id]
+    conn, cur = db_connect()
+    if current_app.config['DB_TYPE'] == 'postgres':
+        cur.execute("DELETE FROM films WHERE id = %s", (id,))
+    else:
+        cur.execute("DELETE FROM films WHERE id = ?", (id,))
+    rows_affected = cur.rowcount
+    db_close(conn, cur)
+    if rows_affected == 0:
+        return 'Такого фильма нет :(', 404
     return '', 204
 
 
 @lab7.route('/lab7/rest-api/films/<int:id>/', methods=['PUT'])
 def put_film(id):
-    if id < 0 or id >= len(films):
-        return 'Такого фильма нет', 404     
-    
-    film = request.get_json()    
+    conn, cur = db_connect()
+    film = request.get_json()
 
     if 'title_ru' in film and film['title_ru'] and not film['title']:
         film['title'] = film['title_ru']
 
-    errors = {}  
+    errors = {}
+
+    if film['title_ru'] == '':
+        errors['title_ru'] = 'Заполните название на русском'
+
+    if film['title'] == '':
+        errors['title'] = 'Заполните название или добавьте название на русском'
+
+    if film['year'] == '' or not isinstance(film['year'], (int, float)):
+        errors['year'] = 'Заполните год выхода фильма'
+    else:
+        current_year = datetime.now().year
+        if not 1895 <= film['year'] <= current_year:
+            errors['year'] = f'Год должен быть от 1895 до {current_year}'
+
+    if film['description'] == '':
+        errors['description'] = 'Заполните описание'
+    else:
+        if len(film['description']) > 2000:
+            errors['description'] = 'Описание не должно превышать 2000 символов'
+
+    if errors:
+        db_close(conn, cur)
+        return jsonify(errors), 400
+    else:
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("""
+                UPDATE films
+                SET title = %s, title_ru = %s, year = %s, description = %s
+                WHERE id = %s
+            """, (film['title'], film['title_ru'], film['year'], film['description'], id))
+        else:
+            cur.execute("""
+                UPDATE films
+                SET title = ?, title_ru = ?, year = ?, description = ?
+                WHERE id = ?
+            """, (film['title'], film['title_ru'], film['year'], film['description'], id))
+        rows_affected = cur.rowcount
+        db_close(conn, cur)
+        if rows_affected == 0:
+            return 'Такого фильма нет :(', 404
+        return jsonify(film)
+
+
+@lab7.route('/lab7/rest-api/films/', methods=['POST'])
+def add_film():
+    conn, cur = db_connect()
+    film = request.get_json()
+
+    if film['title_ru'] and not film['title']:
+        film['title'] = film['title_ru']
+
+    errors = {}
 
     if film['title_ru'] == '':
         errors['title_ru'] = 'Заполните название на русском'
@@ -107,7 +160,22 @@ def put_film(id):
             errors['description'] = 'Описание не должно превышать 2000 символов'
 
     if errors:
-        return errors, 400
-    else:    
-        films[id] = film
-        return films[id]
+        db_close(conn, cur)
+        return jsonify(errors), 400
+    else:
+        if current_app.config['DB_TYPE'] == 'postgres':
+            cur.execute("""
+                INSERT INTO films (title, title_ru, year, description)
+                VALUES (%s, %s, %s, %s)
+                RETURNING id
+            """, (film['title'], film['title_ru'], film['year'], film['description']))
+            id = cur.fetchone()['id']
+        else:
+            cur.execute("""
+                INSERT INTO films (title, title_ru, year, description)
+                VALUES (?, ?, ?, ?)
+            """, (film['title'], film['title_ru'], film['year'], film['description']))
+            cur.execute("SELECT last_insert_rowid()")
+            id = cur.fetchone()[0]
+        db_close(conn, cur)
+        return jsonify({'id': id}), 201
