@@ -69,8 +69,45 @@ def get_film(id):
 @lab7.route('/lab7/rest-api/films/<int:id>/', methods=['DELETE'])
 def del_film(id):
     if id < 0 or id >= len(films):
-        return 'Такого фильма нет :(', 404 
+        return 'Такого фильма нет', 404 
     del films[id]
     return '', 204
 
 
+@lab7.route('/lab7/rest-api/films/<int:id>/', methods=['PUT'])
+def put_film(id):
+    if id < 0 or id >= len(films):
+        return 'Такого фильма нет', 404     
+    
+    film = request.get_json()    
+
+    if 'title_ru' in film and film['title_ru'] and not film['title']:
+        film['title'] = film['title_ru']
+
+    errors = {}  
+
+    if film['title_ru'] == '':
+        errors['title_ru'] = 'Заполните название на русском'
+
+    if film['title'] == '':
+        errors['title'] = 'Заполните название или добавте название на русском'
+    
+
+    if film['year'] == '' or not isinstance(film['year'], (int, float)):
+        errors['year'] = 'Заполните год выхода фильма'
+    else:
+        current_year = datetime.now().year
+        if not 1895 <= film['year'] <= current_year:
+            errors['year'] = f'Год должен быть от 1895 до {current_year}'
+
+    if film['description'] == '':
+        errors['description'] = 'Заполните описание'
+    else:
+        if len(film['description']) > 2000:
+            errors['description'] = 'Описание не должно превышать 2000 символов'
+
+    if errors:
+        return errors, 400
+    else:    
+        films[id] = film
+        return films[id]
