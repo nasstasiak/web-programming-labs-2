@@ -60,3 +60,11 @@ def login():
             return redirect('/lab8/')
         
     return render_template('/lab8/login.html', error = 'Ошибка входа: логин и/или пароль неверны')
+
+
+@lab8.route('/lab8/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect('/lab8/')
+
