@@ -15,3 +15,13 @@ class articles(db.Model, UserMixin):
     is_favorite = db.Column(db.Boolean)
     is_public = db.Column(db.Boolean)
     likes = db.Column(db.Integer)
+
+
+# Новая модель для книг
+class Book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(255), nullable=False)
+    author = db.Column(db.String(255), nullable=False)
+    pages = db.Column(db.Integer, nullable=False)
+    publisher = db.Column(db.String(255), nullable=False)
+    cover_image = db.Column(db.String(255), nullable=False)

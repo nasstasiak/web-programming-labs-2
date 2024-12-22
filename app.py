@@ -6,6 +6,7 @@ from db import db
 from db.models import users
 from flask_login import LoginManager
 
+
 from lab1 import lab1
 from lab2 import lab2
 from lab3 import lab3
@@ -15,6 +16,7 @@ from lab6 import lab6
 from lab7 import lab7
 from lab8 import lab8
 from lab9 import lab9
+from rgz import rgz
 
 
 app = Flask(__name__)
@@ -38,6 +40,7 @@ else:
 db.init_app(app)   
 
 
+
 app.register_blueprint(lab1)
 app.register_blueprint(lab2)
 app.register_blueprint(lab3)
@@ -47,6 +50,7 @@ app.register_blueprint(lab6)
 app.register_blueprint(lab7)
 app.register_blueprint(lab8)
 app.register_blueprint(lab9)
+app.register_blueprint(rgz)
 
 
 login_manager = LoginManager()
@@ -88,7 +92,8 @@ def labs():
         <a href="/lab6/">Лабораторная работа 6</a><br>
         <a href="/lab7/">Лабораторная работа 7</a><br>
         <a href="/lab8/">Лабораторная работа 8</a><br>
-        <a href="/lab9/">Лабораторная работа 9</a>
+        <a href="/lab9/">Лабораторная работа 9</a><br>
+        <a href="/rgz">rgz</a>
         </div>
     </main>
 

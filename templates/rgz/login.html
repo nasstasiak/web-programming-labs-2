@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block lab %}Вход в систему{% endblock %}
+<style>
+    body {
+        overflow: scroll;
+    }
+</style>
+{% block main %}
+<h2>Вход</h2>
+<form method="post" action="/login">
+    <label for="login">Логин:</label>
+    <input type="text" id="login" name="login" required>
+    <label for="password">Пароль:</label>
+    <input type="password" id="password" name="password" required>
+    <button type="submit">Войти</button>
+</form>
+<div id="error-message" style="color: red; display: none;"></div>
+    <script>
+        document.querySelector('form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+            const login = document.getElementById('login').value;
+            const password = document.getElementById('password').value;
+            if (!login || !password) {
+                alert('Пожалуйста, заполните все поля');
+                return;
+            }
+            const formData = new FormData(this);
+            const response = await fetch('/login', {
+                method: 'POST',
+                body: new URLSearchParams(formData)
+            });
+            if (response.ok) {
+                window.location.href = '/admin';
+            } else {
+                const data = await response.json();
+                const errorMessage = document.getElementById('error-message');
+                errorMessage.textContent = data.error || 'Ошибка входа';
+                errorMessage.style.display = 'block';
+            }
+        });
+    </script>
+{% endblock %}

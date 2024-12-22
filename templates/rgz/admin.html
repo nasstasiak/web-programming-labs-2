@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block lab %}Администрирование книг{% endblock %}
+<style>
+    body,
+    html,
+    main {
+        overflow: scroll;
+    }
+
+    th, td {
+        padding: 10px;
+        text-align: center;
+        width: fit-content;
+    }
+    
+    img {
+        max-width: 100%;
+        height: auto;
+        margin-left: 0%;
+        display: block;
+    }
+</style>
+{% block main %}
+<a href="/index">&#128072;</a>
+<h2>Управление книгами</h2>
+<table border="1">
+    <thead>
+        <tr>
+            <th>Обложка</th>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Страницы</th>
+            <th>Издательство</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody id="books">
+        <!-- Здесь будут отображаться книги -->
+    </tbody>
+</table>
+
+<h2>Добавить книгу</h2>
+<form id="add-book-form">
+    <label for="title">Название:</label>
+    <input type="text" id="title" name="title" required>
+    <label for="author">Автор:</label>
+    <input type="text" id="author" name="author" required>
+    <label for="pages">Страницы:</label>
+    <input type="number" id="pages" name="pages" required>
+    <label for="publisher">Издательство:</label>
+    <input type="text" id="publisher" name="publisher" required>
+    <label for="cover_image">URL обложки:</label>
+    <input type="text" id="cover_image" name="cover_image" required>
+    <button type="submit">Добавить книгу</button>
+</form>
+
+<br><br><br>
+<script>
+    // Функция для получения списка книг
+    async function fetchBooks() {
+        try {
+            const response = await fetch('/rgz/json-rpc-api/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    method: 'get_books',
+                    id: 1
+                })
+            });
+            if (!response.ok) {
+                throw new Error('Ошибка при загрузке данных');
+            }
+            const data = await response.json();
+            if (data.result) {
+                const booksTable = document.getElementById('books');
+                booksTable.innerHTML = '';
+                data.result.forEach(book => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td><img src="${book.cover_image}" alt="${book.title}" width="100"></td>
+                        <td>${book.title}</td>
+                        <td>${book.author}</td>
+                        <td>${book.pages}</td>
+                        <td>${book.publisher}</td>
+                        <td>
+                            <button onclick="deleteBook(${book.id})">Удалить</button>
+                        </td>
+                    `;
+                    booksTable.appendChild(row);
+                });
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Не удалось загрузить список книг. Попробуйте позже.');
+        }
+    }
+
+    // Функция для удаления книги
+    async function deleteBook(bookId) {
+        try {
+            const response = await fetch('/rgz/json-rpc-api/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    method: 'delete_book',
+                    params: { id: bookId },
+                    id: 1
+                })
+            });
+            if (!response.ok) {
+                throw new Error('Ошибка при удалении книги');
+            }
+            const data = await response.json();
+            if (data.result === 'success') {
+                fetchBooks();
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Не удалось удалить книгу. Попробуйте позже.');
+        }
+    }
+
+    // Обработчик формы для добавления книги
+    document.getElementById('add-book-form').addEventListener('submit', async function (event) {
+        event.preventDefault();
+        const formData = new FormData(this);
+        const bookData = {
+            title: formData.get('title'),
+            author: formData.get('author'),
+            pages: formData.get('pages'),
+            publisher: formData.get('publisher'),
+            cover_image: formData.get('cover_image')
+        };
+
+        try {
+            const response = await fetch('/rgz/json-rpc-api/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    method: 'add_book',
+                    params: bookData,
+                    id: 1
+                })
+            });
+            if (!response.ok) {
+                throw new Error('Ошибка при добавлении книги');
+            }
+            const data = await response.json();
+            if (data.result === 'success') {
+                fetchBooks();
+                this.reset();
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Не удалось добавить книгу. Попробуйте позже.');
+        }
+    });
+
+    // Загрузка книг при загрузке страницы
+    fetchBooks();
+</script>
+{% endblock %}
