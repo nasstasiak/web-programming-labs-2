@@ -1,0 +1,102 @@
+@font-face {
+    font-family: 'Marck Script';
+    src: url('MarckScript-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Mountains of Christmas';
+    src: url('MountainsofChristmas-Regular.ttf') format('truetype');
+}
+
+body {
+    background-color: #b8e0ef;
+    margin: 0px;
+    height: 100vh;
+    color: rgb(47, 69, 107); 
+    font-size: 16pt;
+    font-family: "Marck Script", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+main {
+    height: fit-content;
+}
+
+header {
+    background-color:rgb(47, 69, 107); 
+    color: #b8e0ef;
+    font-family: "Marck Script", serif;
+    font-weight: 400;
+    font-style: normal;
+    padding: 10px; 
+    font-size: 16pt;
+    margin: 0px;
+}
+
+footer {
+    background-color: rgb(47, 69, 107);
+    color: #b8e0ef;
+    font-style: italic; 
+    padding: 5px; 
+    font-size: 12pt; 
+    text-align: right;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    left: 0;
+}
+
+h1, h2, h3 {
+    text-align: center;
+    font-family: "Marck Script", serif;
+    color: rgb(47, 69, 107);
+}
+
+label {
+    font-family: "Marck Script", serif;
+}
+
+input{
+    border-radius: 10px;
+    border-color: #7581a0;
+    background-color: #cfdeeaa5;
+    font-size: 14pt;
+    font-family: "Marck Script", serif;
+    cursor: pointer;
+    margin: 1px;
+    color: rgb(47, 69, 107);
+}
+
+button {
+    margin: 5px;
+    border-radius: 10px;
+    padding-inline: 5px;
+    border-color: #7581a0;
+    background-color: #cfdeeab3;
+    font-size: 14pt;
+    font-family: "Marck Script", serif;
+    cursor: pointer;
+    color: rgb(47, 69, 107);
+}
+
+button:hover {
+    transform: scale(1.2); 
+    transform-origin: center; 
+
+}
+
+select {
+    border-radius: 10px;
+    border-color: #7581a0;
+    background-color: #cfdeeaa5;
+    font-size: 14pt;
+    font-family: "Marck Script", serif;
+    cursor: pointer;
+    margin: 1px;
+    color: rgb(47, 69, 107);
+}
+
+a {
+    color: rgb(47, 69, 107);
+}
