@@ -1,43 +1,49 @@
 {% extends "base.html" %}
 {% block lab %}Администрирование книг{% endblock %}
+{% block script %}
 <style>
-    body,
-    html,
-    main {
-        overflow: scroll;
+    /* Пагинация */
+    .pagination {
+        margin-top: 20px;
+        display: flex;
+        justify-content: center;
+        gap: 10px;
     }
 
-    th, td {
-        padding: 10px;
-        text-align: center;
-        width: fit-content;
+    .pagination button {
+        
+        cursor: pointer;
     }
     
-    img {
-        max-width: 100%;
-        height: auto;
-        margin-left: 0%;
-        display: block;
-    }
 </style>
+
+{% endblock %}
 {% block main %}
 <a href="/index">&#128072;</a>
 <h2>Управление книгами</h2>
-<table border="1">
-    <thead>
-        <tr>
-            <th>Обложка</th>
-            <th>Название</th>
-            <th>Автор</th>
-            <th>Страницы</th>
-            <th>Издательство</th>
-            <th>Действия</th>
-        </tr>
-    </thead>
-    <tbody id="books">
-        <!-- Здесь будут отображаться книги -->
-    </tbody>
-</table>
+<div class="table-wrapper">
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Обложка</th>
+                <th>Название</th>
+                <th>Автор</th>
+                <th>Страницы</th>
+                <th>Издательство</th>
+                <th>URL обложки</th>
+                <th>Действия</th>
+            </tr>
+        </thead>
+        <tbody id="books">
+            <!-- Здесь будут отображаться книги -->
+        </tbody>
+    </table>
+</div>
+
+<!-- Пагинация -->
+<div class="pagination" id="pagination">
+    <!-- Здесь будут кнопки для страниц -->
+</div>
 
 <h2>Добавить книгу</h2>
 <form id="add-book-form">
@@ -56,6 +62,10 @@
 
 <br><br><br>
 <script>
+    let currentPage = 1; // Текущая страница
+    const booksPerPage = 10; // Количество книг на странице
+    let allBooks = []; // Массив для хранения всех книг
+
     // Функция для получения списка книг
     async function fetchBooks() {
         try {
@@ -73,17 +83,34 @@
             }
             const data = await response.json();
             if (data.result) {
-                const booksTable = document.getElementById('books');
-                booksTable.innerHTML = '';
-                data.result.forEach(book => {
-                    const row = createBookRow(book);
-                    booksTable.appendChild(row);
-                });
+                allBooks = data.result.sort((a, b) => a.id - b.id); // Сортировка по id
+                displayBooks(currentPage); // Отображаем книги для текущей страницы
+                updatePagination(); // Обновляем пагинацию
             }
         } catch (error) {
             console.error('Ошибка:', error);
             alert('Не удалось загрузить список книг. Попробуйте позже.');
         }
+    }
+
+    // Функция для отображения книг на текущей странице
+    function displayBooks(page) {
+        const booksTable = document.getElementById('books');
+        booksTable.innerHTML = '';
+
+        // Вычисляем диапазон книг для текущей страницы
+        const startIndex = (page - 1) * booksPerPage;
+        const endIndex = startIndex + booksPerPage;
+        const booksToDisplay = allBooks.slice(startIndex, endIndex);
+
+        // Отображаем книги
+        booksToDisplay.forEach(book => {
+            const row = createBookRow(book);
+            booksTable.appendChild(row);
+        });
+
+        // Обновляем текущую страницу
+        currentPage = page;
     }
 
     // Функция для создания строки книги
@@ -96,6 +123,7 @@
             <td class="editable" data-field="author">${book.author}</td>
             <td class="editable" data-field="pages">${book.pages}</td>
             <td class="editable" data-field="publisher">${book.publisher}</td>
+            <td class="editable" data-field="cover_image">${book.cover_image}</td>
             <td>
                 <button onclick="editBook(this)">Редактировать</button>
                 <button onclick="deleteBook(${book.id})">Удалить</button>
@@ -133,9 +161,6 @@
             updatedBook[field] = input.value.trim(); // Убираем лишние пробелы
         });
 
-        // Выводим собранные данные для отладки
-        console.log('Собранные данные для отправки:', updatedBook);
-
         try {
             const response = await fetch('/rgz/json-rpc-api/', {
                 method: 'POST',
@@ -148,17 +173,15 @@
                 })
             });
 
-            // Проверяем успешность запроса
             if (!response.ok) {
                 throw new Error('Ошибка при сохранении изменений: ' + response.statusText);
             }
 
             const data = await response.json();
-
-            // Проверяем ответ от сервера
             if (data.result === 'success') {
                 alert('Книга успешно обновлена!');
-                fetchBooks(); // Обновляем таблицу
+                // Обновляем только строку с измененной книгой
+                updateBookRow(row, updatedBook);
             } else {
                 throw new Error('Ошибка при сохранении изменений: ' + JSON.stringify(data.error));
             }
@@ -166,6 +189,22 @@
             console.error('Ошибка:', error);
             alert('Не удалось сохранить изменения. Попробуйте позже.');
         }
+    }
+
+    // Функция для обновления строки с измененной книгой
+    function updateBookRow(row, updatedBook) {
+        row.innerHTML = `
+            <td><img src="${updatedBook.cover_image}" alt="${updatedBook.title}" width="100"></td>
+            <td class="editable" data-field="title">${updatedBook.title}</td>
+            <td class="editable" data-field="author">${updatedBook.author}</td>
+            <td class="editable" data-field="pages">${updatedBook.pages}</td>
+            <td class="editable" data-field="publisher">${updatedBook.publisher}</td>
+            <td class="editable" data-field="cover_image">${updatedBook.cover_image}</td>
+            <td>
+                <button onclick="editBook(this)">Редактировать</button>
+                <button onclick="deleteBook(${updatedBook.id})">Удалить</button>
+            </td>
+        `;
     }
 
     // Функция для удаления книги
@@ -192,6 +231,49 @@
             console.error('Ошибка:', error);
             alert('Не удалось удалить книгу. Попробуйте позже.');
         }
+    }
+
+    // Функция для обновления пагинации
+    function updatePagination() {
+        const pagination = document.getElementById('pagination');
+        pagination.innerHTML = '';
+
+        const totalPages = Math.ceil(allBooks.length / booksPerPage);
+
+        // Кнопка "Предыдущая"
+        const prevButton = document.createElement('button');
+        prevButton.textContent = 'Предыдущая';
+        prevButton.disabled = currentPage === 1;
+        prevButton.onclick = () => changePage(currentPage - 1);
+        pagination.appendChild(prevButton);
+
+        // Кнопки для страниц
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.onclick = () => changePage(i);
+            if (i === currentPage) {
+                pageButton.classList.add('active'); // Подсвечиваем текущую страницу
+            }
+            pagination.appendChild(pageButton);
+        }
+
+        // Кнопка "Следующая"
+        const nextButton = document.createElement('button');
+        nextButton.textContent = 'Следующая';
+        nextButton.disabled = currentPage === totalPages;
+        nextButton.onclick = () => changePage(currentPage + 1);
+        pagination.appendChild(nextButton);
+    }
+
+    // Функция для изменения страницы
+    function changePage(page) {
+        if (page < 1 || page > Math.ceil(allBooks.length / booksPerPage)) {
+            return; // Не позволяем уйти за пределы страниц
+        }
+        currentPage = page;
+        displayBooks(currentPage);
+        updatePagination();
     }
 
     // Обработчик формы для добавления книги
@@ -222,7 +304,11 @@
             }
             const data = await response.json();
             if (data.result === 'success') {
+                // После успешного добавления книги, обновляем список книг
                 fetchBooks();
+                // Переходим на последнюю страницу
+                const totalPages = Math.ceil(allBooks.length / booksPerPage);
+                changePage(totalPages);
                 this.reset();
             }
         } catch (error) {

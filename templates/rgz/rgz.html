@@ -1,16 +1,8 @@
 {% extends "base.html" %}
 {% block lab %}Расчетно-графическая работа{% endblock %}
+{% block script %}
 <style>
-    body,
-    html,
-    main {
-        overflow: scroll;
-    }
-
-    img {
-        margin: 0;
-    }
-
+    /* Пагинация */
     .pagination {
         margin-top: 20px;
         display: flex;
@@ -19,10 +11,13 @@
     }
 
     .pagination button {
-        padding: 10px 20px;
+        
         cursor: pointer;
     }
+    
 </style>
+
+{% endblock %}
 {% block main %}
     <a href="/index">&#128072;</a>
     <h2>Список книг</h2>
@@ -46,9 +41,8 @@
     </div>
 
     <!-- Пагинация -->
-    <div class="pagination">
-        <button id="prev-page" onclick="changePage(-1)">Предыдущая</button>
-        <button id="next-page" onclick="changePage(1)">Следующая</button>
+    <div class="pagination" id="pagination">
+        <!-- Здесь будут кнопки для страниц -->
     </div>
 
     <br><br><br>
@@ -74,8 +68,9 @@
                 }
                 const data = await response.json();
                 if (data.result) {
-                    allBooks = data.result; // Сохраняем все книги в массив
+                    allBooks = data.result.sort((a, b) => a.id - b.id); // Сортировка по id
                     displayBooks(currentPage); // Отображаем книги для текущей страницы
+                    updatePagination(); // Обновляем пагинацию
                 }
             } catch (error) {
                 console.error('Ошибка:', error);
@@ -106,22 +101,51 @@
                 booksTable.appendChild(row);
             });
 
-            // Проверяем, нужно ли отключить кнопки пагинации
-            const prevButton = document.getElementById('prev-page');
-            const nextButton = document.getElementById('next-page');
-            prevButton.disabled = page === 1; // Отключаем "Предыдущая", если это первая страница
-            nextButton.disabled = endIndex >= allBooks.length; // Отключаем "Следующая", если это последняя страница
+            // Обновляем текущую страницу
+            currentPage = page;
+        }
+
+        // Функция для обновления пагинации
+        function updatePagination() {
+            const pagination = document.getElementById('pagination');
+            pagination.innerHTML = '';
+
+            const totalPages = Math.ceil(allBooks.length / booksPerPage);
+
+            // Кнопка "Предыдущая"
+            const prevButton = document.createElement('button');
+            prevButton.textContent = 'Предыдущая';
+            prevButton.disabled = currentPage === 1;
+            prevButton.onclick = () => changePage(currentPage - 1);
+            pagination.appendChild(prevButton);
+
+            // Кнопки для страниц
+            for (let i = 1; i <= totalPages; i++) {
+                const pageButton = document.createElement('button');
+                pageButton.textContent = i;
+                pageButton.onclick = () => changePage(i);
+                if (i === currentPage) {
+                    pageButton.classList.add('active'); // Подсвечиваем текущую страницу
+                }
+                pagination.appendChild(pageButton);
+            }
+
+            // Кнопка "Следующая"
+            const nextButton = document.createElement('button');
+            nextButton.textContent = 'Следующая';
+            nextButton.disabled = currentPage === totalPages;
+            nextButton.onclick = () => changePage(currentPage + 1);
+            pagination.appendChild(nextButton);
         }
 
         // Функция для изменения страницы
-        function changePage(offset) {
-            currentPage += offset;
-            if (currentPage < 1) {
-                currentPage = 1; // Не позволяем уйти на страницу меньше 1
-            } else if (currentPage > Math.ceil(allBooks.length / booksPerPage)) {
-                currentPage = Math.ceil(allBooks.length / booksPerPage); // Не позволяем уйти на страницу больше максимальной
+        function changePage(page) {
+            if (page < 1 || page > Math.ceil(allBooks.length / booksPerPage)) {
+                return; // Не позволяем уйти за пределы страниц
             }
+            currentPage = page;
             displayBooks(currentPage);
+            updatePagination();
         }
 
         // Загрузка книг при загрузке страницы

@@ -16,7 +16,7 @@ def login():
         login_name = request.form['login']
         password = request.form['password']
 
-        # Проверка на администратора
+        # Проверка на администратораф
         if login_name == 'Admin' and password == 'root':
             session['login'] = login_name  # Сохраняем логин в сессии
             return redirect(url_for('rgz.admin_books'))
