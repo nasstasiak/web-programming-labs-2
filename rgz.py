@@ -1,8 +1,6 @@
 from flask import Blueprint, request, jsonify, session, redirect, url_for, render_template
-from flask_login import login_user, logout_user, login_required, current_user
 from db import db
-from db.models import users, Book
-
+from db.models import Book
 
 rgz = Blueprint('rgz', __name__)
 
@@ -167,16 +165,7 @@ def api():
         publisher = params.get('publisher')
         cover_image = params.get('cover_image')
 
-        if not book_id or not title or not author or not pages or not publisher or not cover_image:
-            return {
-                'jsonrpc': '2.0',
-                'error': {
-                    'code': -32602,
-                    'message': 'All fields are required'
-                },
-                'id': id
-            }
-
+        # Проверяем, что книга существует
         book = Book.query.get(book_id)
         if not book:
             return {
@@ -188,24 +177,21 @@ def api():
                 'id': id
             }
 
-        # Обновляем данные книги
-        book.title = title
-        book.author = author
-        book.pages = pages
-        book.publisher = publisher
-        book.cover_image = cover_image
+        # Обновляем данные книги, если они переданы
+        if title:
+            book.title = title
+        if author:
+            book.author = author
+        if pages:
+            book.pages = pages
+        if publisher:
+            book.publisher = publisher
+        if cover_image:
+            book.cover_image = cover_image
+
         db.session.commit()
         return {
             'jsonrpc': '2.0',
             'result': 'success',
             'id': id
         }
-
-    return {
-        'jsonrpc': '2.0',
-        'error': {
-            'code': -32601,
-            'message': 'Method not found'
-        },
-        'id': id
-    }

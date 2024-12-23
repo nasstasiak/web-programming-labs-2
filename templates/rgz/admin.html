@@ -76,23 +76,95 @@
                 const booksTable = document.getElementById('books');
                 booksTable.innerHTML = '';
                 data.result.forEach(book => {
-                    const row = document.createElement('tr');
-                    row.innerHTML = `
-                        <td><img src="${book.cover_image}" alt="${book.title}" width="100"></td>
-                        <td>${book.title}</td>
-                        <td>${book.author}</td>
-                        <td>${book.pages}</td>
-                        <td>${book.publisher}</td>
-                        <td>
-                            <button onclick="deleteBook(${book.id})">Удалить</button>
-                        </td>
-                    `;
+                    const row = createBookRow(book);
                     booksTable.appendChild(row);
                 });
             }
         } catch (error) {
             console.error('Ошибка:', error);
             alert('Не удалось загрузить список книг. Попробуйте позже.');
+        }
+    }
+
+    // Функция для создания строки книги
+    function createBookRow(book) {
+        const row = document.createElement('tr');
+        row.dataset.id = book.id;
+        row.innerHTML = `
+            <td><img src="${book.cover_image}" alt="${book.title}" width="100"></td>
+            <td class="editable" data-field="title">${book.title}</td>
+            <td class="editable" data-field="author">${book.author}</td>
+            <td class="editable" data-field="pages">${book.pages}</td>
+            <td class="editable" data-field="publisher">${book.publisher}</td>
+            <td>
+                <button onclick="editBook(this)">Редактировать</button>
+                <button onclick="deleteBook(${book.id})">Удалить</button>
+            </td>
+        `;
+        return row;
+    }
+
+    // Функция для редактирования книги
+    function editBook(button) {
+        const row = button.parentElement.parentElement;
+        const editableCells = row.querySelectorAll('.editable');
+
+        // Превращаем ячейки в поля ввода
+        editableCells.forEach(cell => {
+            const field = cell.dataset.field;
+            const value = cell.textContent;
+            cell.innerHTML = `<input type="text" value="${value}" data-field="${field}">`;
+        });
+
+        // Заменяем кнопку "Редактировать" на кнопку "Сохранить"
+        button.textContent = 'Сохранить';
+        button.onclick = () => saveBook(button, row.dataset.id);
+    }
+
+    // Функция для сохранения изменений книги
+    async function saveBook(button, bookId) {
+        const row = button.parentElement.parentElement;
+        const inputs = row.querySelectorAll('input');
+        const updatedBook = { id: bookId };
+
+        // Собираем данные из полей ввода
+        inputs.forEach(input => {
+            const field = input.dataset.field;
+            updatedBook[field] = input.value.trim(); // Убираем лишние пробелы
+        });
+
+        // Выводим собранные данные для отладки
+        console.log('Собранные данные для отправки:', updatedBook);
+
+        try {
+            const response = await fetch('/rgz/json-rpc-api/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    jsonrpc: '2.0',
+                    method: 'edit_book',
+                    params: updatedBook,
+                    id: 1
+                })
+            });
+
+            // Проверяем успешность запроса
+            if (!response.ok) {
+                throw new Error('Ошибка при сохранении изменений: ' + response.statusText);
+            }
+
+            const data = await response.json();
+
+            // Проверяем ответ от сервера
+            if (data.result === 'success') {
+                alert('Книга успешно обновлена!');
+                fetchBooks(); // Обновляем таблицу
+            } else {
+                throw new Error('Ошибка при сохранении изменений: ' + JSON.stringify(data.error));
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+            alert('Не удалось сохранить изменения. Попробуйте позже.');
         }
     }
 
