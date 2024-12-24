@@ -16,10 +16,15 @@ def login():
         login_name = request.form['login']
         password = request.form['password']
 
-        # Проверка на администратораф
+        # Проверка на администратора
         if login_name == 'Admin' and password == 'root':
             session['login'] = login_name  # Сохраняем логин в сессии
             return redirect(url_for('rgz.admin_books'))
+        elif login_name == 'Admin' and password != 'root':
+            # Возвращаем JSON-ответ с сообщением об ошибке
+            return jsonify({
+                'error': 'Ошибка. Неверный пароль'
+            }), 403
         else:
             # Возвращаем JSON-ответ с сообщением об ошибке
             return jsonify({

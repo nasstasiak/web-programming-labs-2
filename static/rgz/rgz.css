@@ -1,0 +1,28 @@
+/* Пагинация */
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+.pagination button {
+    cursor: pointer;
+}
+
+/* Выпадающие списки */
+.dropdown {
+    display: none;
+    position: absolute;
+    background-color: #abd4abec;
+    border-radius: 10px;
+    padding: 10px;
+    z-index: 1000;
+    max-height: 400px;
+    overflow-y: scroll;
+}
+
+.dropdown label {
+    display: block;
+    margin: 5px 0;
+}

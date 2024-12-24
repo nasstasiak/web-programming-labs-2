@@ -1,154 +1,95 @@
 {% extends "base.html" %}
 {% block lab %}Расчетно-графическая работа{% endblock %}
 {% block script %}
+<link rel="stylesheet" href="{{ url_for('static', filename='rgz/rgz.css') }}">
 <style>
-    /* Пагинация */
-    .pagination {
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-        gap: 10px;
+    table,
+    tbody,
+    th,
+    td {
+        border: none;
+        text-align: left;
     }
-
-    .pagination button {
-        
-        cursor: pointer;
+    table {
+        margin: auto;
     }
-    
 </style>
-
 {% endblock %}
 {% block main %}
-    <a href="/index">&#128072;</a>
-    <h2>Список книг</h2>
-    <table border="1">
-        <thead>
-            <tr>
-                <th>Обложка</th>
-                <th>Название</th>
-                <th>Автор</th>
-                <th>Страницы</th>
-                <th>Издательство</th>
-            </tr>
-        </thead>
-        <tbody id="books">
-            <!-- Здесь будут отображаться книги -->
-        </tbody>
-    </table>
+<a href="/index">&#128072;</a>
+<div style="float: right;">
+    <a href="/login">&#9881;Admin</a>
+</div>
+<h2 style="margin-top: 0;">Каталог книг</h2>
 
-    <div style="margin-top: 20px;">
-        <a href="/login">Вход для администратора</a>
+<!-- Фильтры -->
+<form id="filter-form">
+    <label for="filter-title">Название:</label>
+    <input type="text" id="filter-title" name="title">
+
+    <!-- Фильтр по авторам -->
+    <label for="filter-author">Автор:</label>
+    <button type="button" id="filter-author-button">Выбрать автора</button>
+    <div id="filter-author-dropdown" class="dropdown">
+        <!-- Чекбоксы для авторов -->
+        <div id="filter-author-checkboxes"></div>
+        <button type="button" onclick="applyAuthorFilter()"
+            style="transform: translateX(-50%); margin-left: 50%;">Применить</button>
     </div>
 
-    <!-- Пагинация -->
-    <div class="pagination" id="pagination">
-        <!-- Здесь будут кнопки для страниц -->
+    <!-- Фильтр по издательствам -->
+    <label for="filter-publisher">Издательство:</label>
+    <button type="button" id="filter-publisher-button">Выбрать издательство</button>
+    <div id="filter-publisher-dropdown" class="dropdown">
+        <!-- Чекбоксы для издательств -->
+        <div id="filter-publisher-checkboxes"></div>
+        <button type="button" onclick="applyPublisherFilter()"
+            style="transform: translateX(-50%); margin-left: 50%;">Применить</button>
     </div>
+    <br>
+    <label for="filter-pages-from">Страницы от:</label>
+    <input type="number" id="filter-pages-from" name="pages_from">
+    <label for="filter-pages-to">Страницы до:</label>
+    <input type="number" id="filter-pages-to" name="pages_to">
+<br>
+    <button type="submit">Применить фильтр</button>
+    <button type="button" onclick="clearFilters()">Очистить фильтр</button>
+</form>
 
-    <br><br><br>
-    <script>
-        let currentPage = 1; // Текущая страница
-        const booksPerPage = 20; // Количество книг на странице
-        let allBooks = []; // Массив для хранения всех книг
+<!-- Сортировка -->
+<label for="sort-by">Сортировать по:</label>
+<select id="sort-by" onchange="applySorting()">
+    <option value="id">ID</option>
+    <option value="title">Название</option>
+    <option value="author">Автор</option>
+    <option value="pages">Страницы</option>
+    <option value="publisher">Издательство</option>
+</select>
 
-        // Функция для получения списка книг
-        async function fetchBooks() {
-            try {
-                const response = await fetch('/rgz/json-rpc-api/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        jsonrpc: '2.0',
-                        method: 'get_books',
-                        id: 1
-                    })
-                });
-                if (!response.ok) {
-                    throw new Error('Ошибка при загрузке данных');
-                }
-                const data = await response.json();
-                if (data.result) {
-                    allBooks = data.result.sort((a, b) => a.id - b.id); // Сортировка по id
-                    displayBooks(currentPage); // Отображаем книги для текущей страницы
-                    updatePagination(); // Обновляем пагинацию
-                }
-            } catch (error) {
-                console.error('Ошибка:', error);
-                alert('Не удалось загрузить список книг. Попробуйте позже.');
-            }
-        }
+<!-- Таблица книг -->
+<table border="1">
+    <thead>
+        <tr>
+            <th>Обложка</th>
+            <th>Название</th>
+            <th>Автор</th>
+            <th>Страницы</th>
+            <th>Издательство</th>
+        </tr>
+    </thead>
+    <tbody id="books">
+        <!-- Здесь будут отображаться книги -->
+    </tbody>
+</table>
 
-        // Функция для отображения книг на текущей странице
-        function displayBooks(page) {
-            const booksTable = document.getElementById('books');
-            booksTable.innerHTML = '';
+<!-- Пагинация -->
+<div class="pagination" id="pagination">
+    <!-- Здесь будут кнопки для страниц -->
+</div>
 
-            // Вычисляем диапазон книг для текущей страницы
-            const startIndex = (page - 1) * booksPerPage;
-            const endIndex = startIndex + booksPerPage;
-            const booksToDisplay = allBooks.slice(startIndex, endIndex);
 
-            // Отображаем книги
-            booksToDisplay.forEach(book => {
-                const row = document.createElement('tr');
-                row.innerHTML = `
-                    <td><img src="${book.cover_image}" alt="${book.title}" width="100"></td>
-                    <td>${book.title}</td>
-                    <td>${book.author}</td>
-                    <td>${book.pages}</td>
-                    <td>${book.publisher}</td>
-                `;
-                booksTable.appendChild(row);
-            });
 
-            // Обновляем текущую страницу
-            currentPage = page;
-        }
+<br><br><br>
 
-        // Функция для обновления пагинации
-        function updatePagination() {
-            const pagination = document.getElementById('pagination');
-            pagination.innerHTML = '';
-
-            const totalPages = Math.ceil(allBooks.length / booksPerPage);
-
-            // Кнопка "Предыдущая"
-            const prevButton = document.createElement('button');
-            prevButton.textContent = 'Предыдущая';
-            prevButton.disabled = currentPage === 1;
-            prevButton.onclick = () => changePage(currentPage - 1);
-            pagination.appendChild(prevButton);
-
-            // Кнопки для страниц
-            for (let i = 1; i <= totalPages; i++) {
-                const pageButton = document.createElement('button');
-                pageButton.textContent = i;
-                pageButton.onclick = () => changePage(i);
-                if (i === currentPage) {
-                    pageButton.classList.add('active'); // Подсвечиваем текущую страницу
-                }
-                pagination.appendChild(pageButton);
-            }
-
-            // Кнопка "Следующая"
-            const nextButton = document.createElement('button');
-            nextButton.textContent = 'Следующая';
-            nextButton.disabled = currentPage === totalPages;
-            nextButton.onclick = () => changePage(currentPage + 1);
-            pagination.appendChild(nextButton);
-        }
-
-        // Функция для изменения страницы
-        function changePage(page) {
-            if (page < 1 || page > Math.ceil(allBooks.length / booksPerPage)) {
-                return; // Не позволяем уйти за пределы страниц
-            }
-            currentPage = page;
-            displayBooks(currentPage);
-            updatePagination();
-        }
-
-        // Загрузка книг при загрузке страницы
-        fetchBooks();
-    </script>
+<script src="{{ url_for('static', filename='rgz/mainpage.js') }}"></script>
 {% endblock %}
